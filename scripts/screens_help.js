@@ -6,7 +6,7 @@ GAME.screens['help'] = (function() {
 	function initialize() {
 		document.getElementById('id-help-back').addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('main-menu'); },
+			function() { ScreenEngine.showScreen('main-menu', GAME['screens']);},
 			false);
 	}
 	

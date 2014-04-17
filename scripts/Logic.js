@@ -13,6 +13,21 @@ GAME.gameState = (function(){
 		5 : [7,6,5]
 	};
 
+
+
+	state.randomizeTimers = function (){
+
+		for(var bombTimer in state.bombTimers){
+
+			if(state.bombTimers.hasOwnProperty(bombTimer)){
+
+				state.bombTimers[bombTimer] = Random.randArrayPermutation(state.bombTimers[bombTimer]);
+			}
+		}
+
+	}
+
+
 	state.maxLevel = 5;
 	state.currentLevel = 1;
 
@@ -123,7 +138,8 @@ GAME.Logic = (function(){
 
 		if (that.levelOver()){
 
-			that.on = false;
+			
+						
 		}
 
 		//that.Input.update(elapsedTime);
@@ -369,7 +385,7 @@ GAME.initializeNTTS = function(_levelParameters){
 
 GAME.run = function(){
 
+	GAME.gameState.randomizeTimers();
 	var _NTTS = GAME.initializeNTTS(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-
 	GAME.Logic.run(_NTTS);
 };

@@ -6,7 +6,7 @@ GAME.screens['high-scores'] = (function() {
 	function initialize() {
 		document.getElementById('id-high-scores-back').addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('main-menu'); },
+			function() { ScreenEngine.showScreen('main-menu', GAME['screens']); },
 			false);
 	}
 	

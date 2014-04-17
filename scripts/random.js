@@ -2,6 +2,26 @@
 /*global Random */
 var Random = (function() {
 	'use strict';
+
+
+	// Produce a random permutation of the elements in _array
+	// http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+	function randArrayPermutation(_inArray){
+
+		var _outArray = _inArray;
+
+		for(var i = 0; i < _outArray.length; i++){
+
+			var randIndex = nextRange(i, _outArray.length - 1)
+				, tempValue = _outArray[i];
+
+			_outArray[i] = _outArray[randIndex];
+			_outArray[randIndex] = tempValue;
+		}
+
+		return _outArray;
+	}
+
 	
 	function nextDouble() {
 		return Math.random();
@@ -61,7 +81,9 @@ var Random = (function() {
 		nextDouble : nextDouble,
 		nextRange : nextRange,
 		nextCircleVector : nextCircleVector,
-		nextGaussian : nextGaussian
+		nextGaussian : nextGaussian,
+		randArrayPermutation : randArrayPermutation
+
 	};
 	
 }());
