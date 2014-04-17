@@ -27,6 +27,7 @@ var Bomb = (function(){
 
 		bomb.on = true;
 		bomb.safe = false;
+		bomb.safeRequest = false;
 		bomb.exp = false;
 		bomb.secondsCtr = 0;
 		
@@ -39,6 +40,13 @@ var Bomb = (function(){
 			if(bomb.on && bomb.secondsCtr > 1){
 
 				bomb.secondsCtr = 0;
+
+				// Check if it has been clicked.
+				if(bomb.safeRequest){
+
+					bomb.safe = true;
+				}
+
 
 				if(bomb.safe){
 

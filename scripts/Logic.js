@@ -20,53 +20,6 @@ GAME.Logic = (function(){
 
 		that.NTTS = _NTTS;
 
-		/*
-		that.canvas = document.getElementById('canvas');
-		that.context = that.canvas.getContext('2d');
-
-	
-	
-		(function initializeGraphics(){
-
-			function _clear(){
-		
-			that.context.save();
-			that.context.setTransform(1, 0, 0, 1, 0, 0);
-			that.context.clearRect(0, 0, canvas.width, canvas.height);
-			that.context.restore();
-			}
-
-			function _drawImage(spec) {
-				
-				that.context.save();
-				
-				that.context.translate(spec.center.x, spec.center.y);
-				that.context.rotate(spec.rotation);
-				that.context.translate(-spec.center.x, -spec.center.y);
-				
-				that.context.drawImage(
-					spec.image, 
-					spec.center.x - spec.width/2, 
-					spec.center.y - spec.height/2,
-					spec.width, spec.height);
-				
-				that.context.restore();
-			}
-
-
-
-			// Expose a graphics object to the particles.
-			that.graphics = {
-
-				clear : _clear,
-				drawImage : _drawImage
-
-			};
-
-		}());
-		*/
-		//that.NTTS.InitializeNTTS();
-		//Scores.Init();
 	};
 	
 
@@ -92,6 +45,8 @@ GAME.Logic = (function(){
 
 	that.update = function (elapsedTime){
 
+		GAME.Input.update(elapsedTime);
+
 		for(var ntt in that.NTTS){
 
 			if(that.NTTS[ntt] && that.NTTS[ntt].update){
@@ -102,7 +57,10 @@ GAME.Logic = (function(){
 
 		if (that.levelOver()){
 
-			
+			// TODO: implement the waiting period between levels
+			// all graphics need to be displayed and hold for a few seconds.
+			GAME.gameState.currentLevel++;
+			that.NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel])
 						
 		}
 
@@ -144,7 +102,9 @@ GAME.Logic = (function(){
 		that.on = true;
 
 		that.initialize(ntts);
-		that.NTTS['INPUT'].startCollecting();
+
+		GAME.Input.startCollecting();
+
 		that.elapsedTime = 0;
 		that.lastTimeStamp = performance.now();
 
@@ -167,6 +127,7 @@ GAME.Logic = (function(){
 				if(that.NTTS['BOMBS']['bombs'][bomb].on){
 
 					over = false;
+					break;
 				}
 			}
 		}
@@ -184,6 +145,8 @@ GAME.Logic = (function(){
 GAME.run = function(){
 
 	GAME.gameState.randomizeTimers();
-	var _NTTS = GAME.initializeNTTS(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	var _NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	GAME.Input = Input;
+	GAME.Input.registerCommand(GAME.NTTS.checkClick);
 	GAME.Logic.run(_NTTS);
 };
