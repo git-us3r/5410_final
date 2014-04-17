@@ -119,6 +119,7 @@ yepnope.addPrefix('preload', function(resource) {
 		// When everything has finished preloading, go ahead and start the GAME
 		if (GAME.status.preloadComplete === GAME.status.preloadRequest) {
 			console.log('Preloading complete!');
+			GAME.Graphics.initialize();
 			ScreenEngine.initialize(GAME['screens']);
 		}
 	};
