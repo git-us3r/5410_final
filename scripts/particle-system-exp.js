@@ -34,7 +34,7 @@ function particleSystem(spec, graphics) {
 				size: Random.nextGaussian(10, 4),
 				center: {x: spec.center.x, y: spec.center.y},
 				direction: Random.nextCircleVector(),
-				acceleration : {x : 0, y : 0}
+				acceleration : {x : 0, y : 0},
 				width: spec.width,
 				height: spec.height,
 				speed: Random.nextGaussian(spec.speed_mean, spec.speed_std), // pixels per second
@@ -56,7 +56,7 @@ function particleSystem(spec, graphics) {
 
 			var gravityIsAB = { x : 0, y : 9.80 };
 
-			direction = Vector2d.(gravityIsAB, p.direction);
+			direction = Vector2d.add(gravityIsAB, p.direction);
 			direction = Vector2d.scale(speed, direction);
 
 		};

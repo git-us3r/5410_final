@@ -26,6 +26,7 @@ GAME.gameState = (function(){
 GAME.Logic = (function(){
 
 	var that = {};
+	that.on = false;
 	that.NTTS = {};
 
 
@@ -35,7 +36,7 @@ GAME.Logic = (function(){
 	// bomb, input, score, etc.
 	//
 	///////
-	that.initialize = function (_NTTS){
+	that.initialize = function (_NTTS, level){
 
 		that.NTTS = _NTTS;
 
@@ -94,6 +95,7 @@ GAME.Logic = (function(){
 	that.loop = function(time){
 
 		if(that.on)	{
+
 			that.elapsedTime = time - that.lastTimeStamp;
 			that.lastTimeStamp = time;
 
@@ -117,6 +119,11 @@ GAME.Logic = (function(){
 
 				that.NTTS[ntt].update(elapsedTime);
 			}
+		}
+
+		if (that.levelOver()){
+
+			that.on = false;
 		}
 
 		//that.Input.update(elapsedTime);
@@ -155,15 +162,38 @@ GAME.Logic = (function(){
 	that.run = function(ntts){
 
 		that.on = true;
+
 		that.initialize(ntts);
+		that.NTTS['INPUT'].startCollecting();
 		that.elapsedTime = 0;
 		that.lastTimeStamp = performance.now();
 
 		//that.PlaySound(that.Sounds.gamePlay)
 
 		requestAnimationFrame(that.loop);
-
 	};
+
+
+
+	that.levelOver = function(){
+
+		var over = true;
+
+		// If at least one bomb is on, the leve goes on.
+		for(var bomb in that.NTTS['BOMBS']['bombs']){
+
+			if(that.NTTS['BOMBS']['bombs'].hasOwnProperty(bomb)){
+
+				if(that.NTTS['BOMBS']['bombs'][bomb].on){
+
+					over = false;
+				}
+			}
+		}
+
+		return over;
+	};
+
 
 	return that;
 }());
@@ -302,18 +332,44 @@ GAME.initializeNTTS = function(_levelParameters){
 			}
 		};
 
+
+		ntt.checkClick = function(_clickLocation) {
+			
+			for(var bomb in ntt.bombs){
+				if(ntt.bombs.hasOwnProperty(bomb)){
+
+					if(ntt.bombs[bomb].on){
+
+						if(ntt.bombs[bomb].hit(_clickLocation)){
+
+							ntt.bombs[bomb].safe = true;
+						}
+					}
+				}
+			}
+		}
+
+
 		return ntt;
 
 	}(_levelParameters));
 
+	
 
+
+	ntts['INPUT'] = Input;
+	ntts['INPUT'].registerCommand(ntts['BOMBS'].checkClick);
 
 	return ntts;
 };
 
 
+
+
+
 GAME.run = function(){
 
 	var _NTTS = GAME.initializeNTTS(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+
 	GAME.Logic.run(_NTTS);
 };

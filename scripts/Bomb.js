@@ -26,7 +26,7 @@ var Bomb = (function(){
 		bomb.maxGlassNumber = _glassNumbers.length;
 
 		bomb.on = true;
-		bomb.save = false;
+		bomb.safe = false;
 		bomb.exp = false;
 		bomb.secondsCtr = 0;
 		
@@ -40,7 +40,7 @@ var Bomb = (function(){
 
 				bomb.secondsCtr = 0;
 
-				if(bomb.save){
+				if(bomb.safe){
 
 				 	bomb.on = false;
 				 	bomb.currentCover = bomb.checkMark;
@@ -85,6 +85,19 @@ var Bomb = (function(){
 			bomb.center.x -= 16;
 			bomb.center.y -= 14;
 		};
+
+
+		bomb.hit = function(_clickLocation){
+
+			var differenceVector = Vector2d.subtract(_clickLocation, bomb.center)
+				, differenceVectorMagnitude = Vector2d.magnitude(differenceVector);
+
+
+			// This works because the bomb is technically square
+			return (differenceVectorMagnitude <= .25 * bomb.width);
+
+		};
+
 
 
 

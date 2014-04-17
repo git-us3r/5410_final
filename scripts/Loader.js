@@ -2,7 +2,7 @@ var GAME = {
 	images : {},
 	screens : {},
 	sounds : {},
-	logic : {},
+	//logic : {},
 
 	status : {
 		preloadRequest : 0,
@@ -52,9 +52,13 @@ window.addEventListener('load', function() {
 				'preload!images/glass_numbers_7.png',
 				'preload!images/glass_numbers_8.png',
 				'preload!images/glass_numbers_9.png',
+				'preload!scripts/random.js',
+				'preload!scripts/Vector2d.js',
+				'preload!scripts/particle-system-exp.js',
 				'preload!scripts/Spec.js',
 				'preload!scripts/Bomb.js',
 				'preload!scripts/Explosion.js',
+				'preload!scripts/Input.js',
 				'preload!scripts/Logic.js',
 				'preload!scripts/screens_gamePlay.js',
 				'preload!scripts/screens_show.js',
