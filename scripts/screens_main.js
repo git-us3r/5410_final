@@ -9,22 +9,22 @@ GAME.screens['main-menu'] = (function() {
 		// Setup each of menu events for the ScreenEngine
 		document.getElementById('id-new-game').addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('game-play'); },
+			function() { ScreenEngine.showScreen('game-play', GAME['screens'] ); },
 			false);
 		
 		document.getElementById('id-high-scores').addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('high-scores'); },
+			function() { ScreenEngine.showScreen('high-scores', GAME['screens']); },
 			false);
 		
 		document.getElementById('id-help').addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('help'); },
+			function() { ScreenEngine.showScreen('help', GAME['screens']); },
 			false);
 		
-		document.getElementById('id-about').addEventListener(
+		document.getElementById('id-about', GAME['screens']).addEventListener(
 			'click',
-			function() { GAME.ScreenEngine.showScreen('about'); },
+			function() { ScreenEngine.showScreen('about', GAME['screens']); },
 			false);
 	}
 	

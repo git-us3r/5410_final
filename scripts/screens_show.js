@@ -1,16 +1,13 @@
 /*jslint browser: true, white: true, plusplus: true */
 /*global GAME */
-// ------------------------------------------------------------------
-// 
-// This is the game object.  Everything about the game is located in 
-// this object.
-//
-// ------------------------------------------------------------------
 
-GAME.ScreenEngine = (function() {
+
+// TODO: document interface.
+
+ScreenEngine = (function() {
 	'use strict';
 	
-	function showScreen(id) {
+	function showScreen(id, _gameScreens) {
 		var screen = 0,
 			screens = null;
 		//
@@ -21,7 +18,7 @@ GAME.ScreenEngine = (function() {
 		}
 		//
 		// Tell the screen to start actively running
-		GAME.screens[id].run();
+		_gameScreens[id].run();
 		//
 		// Then, set the new screen to be active
 		document.getElementById(id).classList.add('active');
@@ -32,19 +29,19 @@ GAME.ScreenEngine = (function() {
 	// This function performs the one-time game initialization.
 	//
 	//------------------------------------------------------------------
-	function initialize() {
+	function initialize(_gameScreens) {
 		var screen = null;
 		//
 		// Go through each of the screens and tell them to initialize
-		for (screen in GAME.screens) {
-			if (GAME.screens.hasOwnProperty(screen)) {
-				GAME.screens[screen].initialize();
+		for (screen in _gameScreens) {
+			if (_gameScreens.hasOwnProperty(screen)) {
+				_gameScreens[screen].initialize();
 			}
 		}
 		
 		//
 		// Make the main-menu screen the active one
-		showScreen('main-menu');
+		showScreen('main-menu', _gameScreens);
 	}
 	
 	return {
