@@ -8,21 +8,34 @@
 
 GAME.NTTS = (function(){
 
-	var ntts = {};
+	var ntts = {}
+		, sounds = GAME.Sounds.PossibleSounds
+		, playsound = GAME.Sounds.playSound
+		, images = {}
+		, interludeNTTS = {};
 
-	ntts['BK'] = GAME['images']['images/Background.png'];
-	ntts['BombImage'] = GAME['images']['images/Bomb.png'];
-	ntts['checkMark'] = GAME['images']['images/checkmark.png'];
-	ntts['expMark'] = GAME['images']['images/Explosion.png'];
 
-	ntts['GlassNumbers'] = [];
+	images['BK'] = GAME['images']['images/Background.png'];
+	images['BombImage'] = GAME['images']['images/Bomb.png'];
+	images['checkMark'] = GAME['images']['images/checkmark.png'];
+	images['expMark'] = GAME['images']['images/Explosion.png'];
+
+	images['number1'] = GAME['images']['images/number1.png'];
+	images['number2'] = GAME['images']['images/number2.png'];
+	images['number3'] = GAME['images']['images/number3.png'];
+	images['GO'] = GAME['images']['images/GO.png'];
+
+	images['GlassNumbers'] = [];
 
 
 	// Side effect: ntts['GlassNumbers'] will contain the glasse numbers ordered in increasing number.
 	for (var i = 0; i < 10; i++){
 
-		ntts['GlassNumbers'].push(GAME['images']['images/glass_numbers_' + i + '.png']);
+		images['GlassNumbers'].push(GAME['images']['images/glass_numbers_' + i + '.png']);
 	}
+
+
+
 
 
 
@@ -34,7 +47,7 @@ GAME.NTTS = (function(){
 
 			// Background NTT
 			var ntt = {}
-				, _image = ntts['BK']
+				, _image = images['BK']
 				, _width = 1200
 				, _height = 600
 				, _center = {
@@ -84,27 +97,39 @@ GAME.NTTS = (function(){
 			ntt.bombs = {};
 
 
-			for(var i = 0; i < _levelTimers.length; i++){
+			function initializeBombs(_levelTimers){
 
-				var glassImages = [];
-				for (var countDown = _levelTimers[i]; countDown >= 0; countDown--) {
+				for(var i = 0; i < _levelTimers.length; i++){
 
-					glassImages.push(ntts['GlassNumbers'][countDown]);
+					var glassImages = [];
+					for (var countDown = _levelTimers[i]; countDown >= 0; countDown--) {
+
+						glassImages.push(images['GlassNumbers'][countDown]);
+					}
+
+					var notificationObject = {
+
+						func : playsound,
+						param : sounds.explosion
+					};
+
+					var tempBomb = Bomb.create(notificationObject, images['BombImage']
+												, glassImages
+												, images['checkMark']
+												, images['expMark']
+												, bombDimension
+												, bombDimension
+												, positions[i]
+												, 0
+												, -1
+												, true);
+
+					ntt.bombs[tempBomb.id] = tempBomb;
 				}
-
-				var tempBomb = Bomb.create(ntts['BombImage']
-											, glassImages
-											, ntts['checkMark']
-											, ntts['expMark']
-											, bombDimension
-											, bombDimension
-											, positions[i]
-											, 0
-											, -1
-											, true);
-
-				ntt.bombs[tempBomb.id] = tempBomb;
 			}
+
+			// call it right now plz
+			initializeBombs(_levelTimers);
 
 
 
@@ -132,11 +157,78 @@ GAME.NTTS = (function(){
 			};
 
 
+
+			ntt.reset = function(_levelTimers){
+
+				ntt.bombs = {};
+				initializeBombs(_levelTimers);
+
+			};
+
+
 			return ntt;
 
 		}(_levelParameters));
 
-		
+
+
+		ntts['NUMBERS'] = (function(){
+
+			var ntt = {}
+				, _images = {0 : images['GO'], 1 : images['number1'], 2 : images['number2'], 3 : images['number3']}
+				, _width = 300
+				, _height = 300
+				, _center = {
+
+					x : 600,
+					y : 300
+				}
+				, _rotation = 0;
+
+			ntt.currentImage = 3;
+			ntt.specWidth = 300;
+			ntt.specHeight = 300;
+
+			ntt.spec = Spec.create(_images[3], _width, _height, _center, _rotation);
+
+			ntt.update = function(_elapsedTime){
+
+				ntt.spec.width -= _elapsedTime * ntt.specWidth;
+				ntt.spec.height -= _elapsedTime * ntt.specHeight;
+
+				if(ntt.spec.width <= 1 || ntt.spec.height <= 1){
+
+					ntt.spec.width = 300;
+					ntt.spec.height = 300;
+
+					ntt.currentImage--;
+					ntt.spec.image = _images[ntt.currentImage];
+				}
+			};
+
+
+			ntt.render = function(_graphics){
+
+				_graphics.drawImage(ntt.spec);
+			};
+
+
+			ntt.restart = function(){
+
+				ntt.spec.width = ntt.specWidth;
+				ntt.spec.height = ntt.specHeight;
+
+				ntt.currentImage = 3;
+				ntt.spec.image = _images[ntt.currentImage];
+
+			};
+
+
+			return ntt;
+
+		}());
+
+
 
 		// Register Input object and register click function.
 		// ntts['INPUT'] = Input;
@@ -155,6 +247,8 @@ GAME.NTTS = (function(){
 
 					if(ntts['BOMBS']['bombs'][bomb].hit(_clickLocation)){
 
+
+						playsound(sounds.hit);
 						ntts['BOMBS']['bombs'][bomb].safeRequest = true;
 					}
 				}

@@ -1,18 +1,26 @@
 'use strict';
 
+// Depends on GAME.Graphics, GAME.NTTS, GAME.Input, (INCOMPLETE LIST!)
 
+// Consider replacing GAME.* references by parameters.
+/////
 
 GAME.Logic = (function(){
 
 	var that = {};
 	that.on = false;
+	that.interlude = false;
+	that.interludeDur = 4;
+	that.interludeCurrent = 0;
 	that.NTTS = {};
+	that.screenSwitch = false;
+	that.firstRun = true;
 
 
 	/////
 	//
-	// _NTTS is an objec consisting of all the entities of the game:
-	// bomb, input, score, etc.
+	// _NTTS is an object consisting of all the entities of the game:
+	// bomb, score, etc.
 	//
 	///////
 
@@ -47,20 +55,65 @@ GAME.Logic = (function(){
 
 		GAME.Input.update(elapsedTime);
 
-		for(var ntt in that.NTTS){
+		if(that.interlude){
 
-			if(that.NTTS[ntt] && that.NTTS[ntt].update){
+			that.interludeCurrent += elapsedTime;
 
-				that.NTTS[ntt].update(elapsedTime);
+			if(that.interludeCurrent >= 1 && !that.screenSwitch && !that.firstRun){
+
+				GAME.gameState.currentLevel++;
+				//that.NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+				that.NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+				that.screenSwitch = true;
+			}
+			if(that.interludeCurrent >= that.interludeDur){
+
+				// Necessary evil.
+				if(that.firstRun){
+
+					that.firstRun = false;
+				}
+
+
+				that.NTTS['NUMBERS'].restart();
+				that.interlude = false;
+				that.screenSwitch = false;
+				GAME.Input.collecting = true;
+			}
+			else{
+
+				that.NTTS['NUMBERS'].update(elapsedTime);
+			}
+
+		}
+
+
+		if(!that.interlude){
+
+			for(var ntt in that.NTTS){
+
+				if(ntt !== 'NUMBERS' && that.NTTS[ntt] && that.NTTS[ntt].update){
+
+					that.NTTS[ntt].update(elapsedTime);
+				}
 			}
 		}
 
-		if (that.levelOver()){
 
+
+
+		if (that.levelOver() && !that.interlude){
 			// TODO: implement the waiting period between levels
-			// all graphics need to be displayed and hold for a few seconds.
-			GAME.gameState.currentLevel++;
-			that.NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel])
+			// all graphics need to be displayed and hold for a few seconds
+
+			GAME.Input.collecting = false;		// wow ... no privacy!
+
+
+			that.interludeCurrent = 0;
+			that.interlude  = true;
+
+			that.NTTS['NUMBERS'].restart();
+			that.screenSwitch = false;
 						
 		}
 
@@ -71,14 +124,25 @@ GAME.Logic = (function(){
 
 	that.render = function(_graphics){
 
-		//that.graphics.drawImage(that.NTTS['METER']);
-		//that.graphics.drawImage(that.NTTS['BAR']);
-		for(var ntt in that.NTTS){
+		if(that.interlude){
 
-			if(that.NTTS[ntt] && that.NTTS[ntt].render){
+			for(var ntt in that.NTTS){
 
-				that.NTTS[ntt].render(_graphics);
+				if(that.NTTS[ntt] && that.NTTS[ntt].render){
+
+					that.NTTS[ntt].render(_graphics);
+				}
 			}
+		}
+		else {
+
+			for(var ntt in that.NTTS){
+
+				if(ntt !== 'NUMBERS' && that.NTTS[ntt] && that.NTTS[ntt].render){
+
+					that.NTTS[ntt].render(_graphics);
+				}
+			}	
 		}
 
 	};
@@ -100,10 +164,10 @@ GAME.Logic = (function(){
 	that.run = function(ntts){
 
 		that.on = true;
-
+		that.interlude = true;
 		that.initialize(ntts);
 
-		GAME.Input.startCollecting();
+		//GAME.Input.startCollecting();
 
 		that.elapsedTime = 0;
 		that.lastTimeStamp = performance.now();
@@ -147,6 +211,7 @@ GAME.run = function(){
 	GAME.gameState.randomizeTimers();
 	var _NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
 	GAME.Input = Input;
+	GAME.Input.bind2Window();
 	GAME.Input.registerCommand(GAME.NTTS.checkClick);
 	GAME.Logic.run(_NTTS);
 };

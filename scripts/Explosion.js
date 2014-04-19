@@ -108,6 +108,7 @@ var Explosion = (function(){
 			}			
 			else if (explosion.visible){
 
+				// This flag can be used to remove expired explosions (client)
 				explosion.visible  = false;
 			}
 		};

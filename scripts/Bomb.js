@@ -4,8 +4,10 @@ var Bomb = (function(){
 
 	// _glassNumbers contains an ordered array with the glass numbers to be used in countdount
 	// It is an array of Image objects.
+
+	// Implementing observer pattern to notify explosion or saved for sounds and other stuff
 	//////
-	function create(_bombImage, _glassNumbers, _checkMark, _expMark, _width, _height, _center, _rotation, _duration, _visible){
+	function create(_notify, _bombImage, _glassNumbers, _checkMark, _expMark, _width, _height, _center, _rotation, _duration, _visible){
 
 		var bomb = Spec.create(_bombImage, _width, _height, _center, _rotation);
 
@@ -67,6 +69,7 @@ var Bomb = (function(){
 						bomb.on = false;
 						bomb.exp = true;
 						bomb.currentCover = bomb.expMark;
+						_notify.func(_notify.param);
 					}
 				}
 				
@@ -102,7 +105,7 @@ var Bomb = (function(){
 
 
 			// This works because the bomb is technically square
-			return (differenceVectorMagnitude <= .25 * bomb.width);
+			return (differenceVectorMagnitude <= .35 * bomb.width);
 
 		};
 

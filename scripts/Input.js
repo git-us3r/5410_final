@@ -17,9 +17,7 @@ Input = (function() {
 
 		that.mouseDown = function(e) {
 			
-			if(that.collecting){
-				that.mouseDownArr.push(e);
-			}
+			that.mouseDownArr.push(e);
 		};
 		
 		
@@ -56,10 +54,10 @@ Input = (function() {
 		};
 
 		
-		that.startCollecting = function(){
+		that.bind2Window = function(){
 
 			window.addEventListener('mousedown', that.mouseDown.bind(that));
-			that.collecting = true;
+			//that.collecting = true;
 		};
 		
 		return that;
