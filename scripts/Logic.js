@@ -51,6 +51,72 @@ GAME.Logic = (function(){
 	}
 	
 
+	function updateInterlude(elapsedTime){
+
+		interludeCurrent += elapsedTime;
+
+		// This allows the player to view the current screen for a moment longer after the level is over
+		// If it is the first run, this is skipped, because is not a level up.
+		if(interludeCurrent >= 2 && !screenSwitch && !firstRun){
+
+			GAME.gameState.currentLevel++;
+			NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+			screenSwitch = true;
+		}
+		if(interludeCurrent >= interludeDur){
+
+			// Necessary evil.
+			if(firstRun){
+
+				firstRun = false;
+			}
+
+
+			NTTS['NUMBERS'].restart();
+			interlude = false;
+			screenSwitch = false;
+			GAME.Input.collecting = true;
+		}
+		else{
+
+			NTTS['NUMBERS'].update(elapsedTime);
+		}
+	}
+
+
+
+	function updateGame(elapsedTime){
+
+		for(var ntt in NTTS){
+
+			if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
+
+				NTTS[ntt].update(elapsedTime);
+			}
+		}
+	}
+
+
+
+	function checkLevelResults(){
+
+		go2Interlude();
+
+	}
+
+
+	function go2Interlude(){
+
+		GAME.Input.collecting = false;		// wow ... no privacy!
+
+		interludeCurrent = 0;
+		interlude  = true;
+
+		NTTS['NUMBERS'].restart();
+		screenSwitch = false;
+	}
+
+
 
 	function update (elapsedTime){
 
@@ -58,67 +124,17 @@ GAME.Logic = (function(){
 
 		if(interlude){
 
-			interludeCurrent += elapsedTime;
-
-			if(interludeCurrent >= 1 && !screenSwitch && !firstRun){
-
-				GAME.gameState.currentLevel++;
-				//NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-				NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-				screenSwitch = true;
-			}
-			if(interludeCurrent >= interludeDur){
-
-				// Necessary evil.
-				if(firstRun){
-
-					firstRun = false;
-				}
-
-
-				NTTS['NUMBERS'].restart();
-				interlude = false;
-				screenSwitch = false;
-				GAME.Input.collecting = true;
-			}
-			else{
-
-				NTTS['NUMBERS'].update(elapsedTime);
-			}
-
+			updateInterlude(elapsedTime);
 		}
+		else{
 
+			updateGame(elapsedTime);
 
-		if(!interlude){
+			if (levelOver()){
 
-			for(var ntt in NTTS){
-
-				if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
-
-					NTTS[ntt].update(elapsedTime);
-				}
+				checkLevelResults();
 			}
 		}
-
-
-
-
-		if (levelOver() && !interlude){
-			// TODO: implement the waiting period between levels
-			// all graphics need to be displayed and hold for a few seconds
-
-			GAME.Input.collecting = false;		// wow ... no privacy!
-
-
-			interludeCurrent = 0;
-			interlude  = true;
-
-			NTTS['NUMBERS'].restart();
-			screenSwitch = false;
-						
-		}
-
-		//Input.update(elapsedTime);
 	}
 	
 
