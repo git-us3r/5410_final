@@ -48,7 +48,7 @@ GAME.NTTS = (function(){
 		ntts['BACKGROUND'] = (function(){
 
 			// Background NTT
-			var ntt = {}
+			var spec = {}
 				, _image = images['BK']
 				, _width = 1200
 				, _height = 600
@@ -59,14 +59,27 @@ GAME.NTTS = (function(){
 				}
 				, _rotation = 0;
 
-			ntt.spec = Spec.create(_image, _width, _height, _center, _rotation);
+			spec = Spec.create(_image, _width, _height, _center, _rotation);
 
-			ntt.render = function(_graphics){
+			function render(_graphics){
 
-				_graphics.drawImage(ntt.spec);
+				_graphics.drawImage(spec);
 			};
 
-			return ntt;
+
+			function update(_elapsedTime){
+
+				// EMPTY
+			}
+
+
+
+			return {
+
+				render : render,
+				update : update
+			};
+
 		}());
 
 
