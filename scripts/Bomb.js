@@ -123,7 +123,8 @@ var Bomb = (function(){
 		bomb.update = update;
 		bomb.render = render;
 		bomb.hit = hit;
-		bomb.on = function(){return on};
+		bomb.on = function(){return on;};
+		bomb.safe = function(){return safe;};
 		return bomb;
 	}
 

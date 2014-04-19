@@ -51,6 +51,15 @@ GAME.Logic = (function(){
 	}
 	
 
+	function setLevel (argument) {
+
+		// TODO: determine if it should switch to a new level or repeat the old one.
+		NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	}
+
+
+
+	// This is just the get ready annimation sequence.
 	function updateInterlude(elapsedTime){
 
 		interludeCurrent += elapsedTime;
@@ -59,8 +68,7 @@ GAME.Logic = (function(){
 		// If it is the first run, this is skipped, because is not a level up.
 		if(interludeCurrent >= 2 && !screenSwitch && !firstRun){
 
-			GAME.gameState.currentLevel++;
-			NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+			setLevel();
 			screenSwitch = true;
 		}
 		if(interludeCurrent >= interludeDur){
@@ -98,14 +106,35 @@ GAME.Logic = (function(){
 
 
 
+	function looseInterlude(){
+
+		// TODO: implement
+		winInterlude();
+	}
+
+
+
 	function checkLevelResults(){
 
-		go2Interlude();
+
+		if(NTTS['BOMBS'].allSafe()){
+
+			GAME.gameState.currentLevel++;
+			winInterlude();
+
+		}
+		else{
+
+			looseInterlude();
+		}
+
+
+		
 
 	}
 
 
-	function go2Interlude(){
+	function winInterlude(){
 
 		GAME.Input.collecting = false;		// wow ... no privacy!
 

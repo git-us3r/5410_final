@@ -229,6 +229,29 @@ GAME.NTTS = (function(){
 
 
 
+			function allSafe(){
+
+				var allSafe = true;
+
+				// If at least one bomb is on, the leve goes on.
+				for(var bomb in bombs){
+
+					if(bombs.hasOwnProperty(bomb)){
+
+						if(!bombs[bomb].safe()){
+
+							allSafe = false;
+							break;
+						}
+					}
+				}
+
+				return allSafe;		
+
+			}
+
+
+
 			return {
 
 				initializeBombs : initializeBombs,
@@ -236,7 +259,8 @@ GAME.NTTS = (function(){
 				render : render,
 				reset : reset,
 				on : on,
-				checkClick : checkClick
+				checkClick : checkClick,
+				allSafe : allSafe
 
 			};
 
