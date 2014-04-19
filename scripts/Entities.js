@@ -28,7 +28,9 @@ GAME.NTTS = (function(){
 	images['GlassNumbers'] = [];
 
 
-	// Side effect: ntts['GlassNumbers'] will contain the glasse numbers ordered in increasing number.
+	// Side effect: images['GlassNumbers'] will contain the glasse numbers ordered in increasing number.
+	// to make it easy to iterate below.
+	////
 	for (var i = 0; i < 10; i++){
 
 		images['GlassNumbers'].push(GAME['images']['images/glass_numbers_' + i + '.png']);
@@ -84,17 +86,15 @@ GAME.NTTS = (function(){
 				, bombCoverDim = 90
 				, positions = [
 
-					{x : 400, y : 200}
-					, {x : 600, y : 200}
-					, {x : 800, y : 200}
-					, {x : 400, y : 400}
-					, {x : 600, y : 400}
-					, {x : 800, y : 400}
+					{x : 400, y : 200},
+					{x : 600, y : 200},
+					{x : 800, y : 200},
+					{x : 400, y : 400},
+					{x : 600, y : 400},
+					{x : 800, y : 400}
 
 				]
-				, ntt = {};
-
-			ntt.bombs = {};
+				, bombs = {};
 
 
 			function initializeBombs(_levelTimers){
@@ -128,7 +128,7 @@ GAME.NTTS = (function(){
 												, -1
 												, true);
 
-					ntt.bombs[tempBomb.id] = tempBomb;
+					bombs[tempBomb.id] = tempBomb;
 				}
 			}
 
@@ -137,40 +137,95 @@ GAME.NTTS = (function(){
 
 
 
-			ntt.update = function(_elapsedTime){
+			function update(_elapsedTime){
 
-				for (var bomb in ntt.bombs){
-					if(ntt.bombs.hasOwnProperty(bomb)){
+				for (var bomb in bombs){
+					if(bombs.hasOwnProperty(bomb)){
 
-						ntt.bombs[bomb].update(_elapsedTime);
+						bombs[bomb].update(_elapsedTime);
 					}
 				}
-			};
+			}
 
 
 
 
-			ntt.render = function(_graphics){
+			function render(_graphics){
 
-				for (var bomb in ntt.bombs){
-					if(ntt.bombs.hasOwnProperty(bomb)){
+				for (var bomb in bombs){
+					if(bombs.hasOwnProperty(bomb)){
 
-						ntt.bombs[bomb].render(_graphics);
+						bombs[bomb].render(_graphics);
 					}
 				}
-			};
+			}
 
 
 
-			ntt.reset = function(_levelTimers){
+			function reset(_levelTimers){
 
-				ntt.bombs = {};
+				bombs = {};
 				initializeBombs(_levelTimers);
 
 			};
 
+			function on(){
 
-			return ntt;
+				var over = true;
+
+				// If at least one bomb is on, the leve goes on.
+				for(var bomb in bombs){
+
+					if(bombs.hasOwnProperty(bomb)){
+
+						if(bombs[bomb].on()){
+
+							over = false;
+							break;
+						}
+					}
+				}
+
+				return over;				
+			}
+
+
+			function checkClick(_clickLocation) {
+				
+				for(var bomb in bombs){
+					if(bombs.hasOwnProperty(bomb)){
+
+						if(bombs[bomb].on()){
+
+							/*
+							if(bombs[bomb].hit(_clickLocation)){
+
+
+								playsound(sounds.hit);
+								bombs[bomb].safeRequest = true;
+							}
+							*/
+
+							// CHANGE:
+							// Use the new interface: call hit
+							bombs[bomb].hit(_clickLocation);					
+						}
+					}
+				}
+			}
+
+
+
+			return {
+
+				initializeBombs : initializeBombs,
+				update : update,
+				render : render,
+				reset : reset,
+				on : on,
+				checkClick : checkClick
+
+			};
 
 		}(_levelParameters));
 
@@ -241,36 +296,10 @@ GAME.NTTS = (function(){
 		return ntts;
 	}
 
-
-	function checkClick(_clickLocation) {
-				
-		for(var bomb in ntts['BOMBS']['bombs']){
-			if(ntts['BOMBS']['bombs'].hasOwnProperty(bomb)){
-
-				if(ntts['BOMBS']['bombs'][bomb].on){
-
-					/*
-					if(ntts['BOMBS']['bombs'][bomb].hit(_clickLocation)){
-
-
-						playsound(sounds.hit);
-						ntts['BOMBS']['bombs'][bomb].safeRequest = true;
-					}
-					*/
-
-					// CHANGE:
-					// Use the new interface: call hit
-					ntts['BOMBS']['bombs'][bomb].hit(_clickLocation);					
-				}
-			}
-		}
-	}
-
 	// Expose the initialize method.
 	return {
 
 		initialize : initialize,
-		checkClick : checkClick
 	};
 
 }());

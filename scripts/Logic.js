@@ -181,22 +181,7 @@ GAME.Logic = (function(){
 
 	that.levelOver = function(){
 
-		var over = true;
-
-		// If at least one bomb is on, the leve goes on.
-		for(var bomb in that.NTTS['BOMBS']['bombs']){
-
-			if(that.NTTS['BOMBS']['bombs'].hasOwnProperty(bomb)){
-
-				if(that.NTTS['BOMBS']['bombs'][bomb].on){
-
-					over = false;
-					break;
-				}
-			}
-		}
-
-		return over;
+		return that.NTTS['BOMBS'].on();
 	};
 
 
@@ -212,6 +197,6 @@ GAME.run = function(){
 	var _NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
 	GAME.Input = Input;
 	GAME.Input.bind2Window();
-	GAME.Input.registerCommand(GAME.NTTS.checkClick);
+	GAME.Input.registerCommand(_NTTS['BOMBS'].checkClick);
 	GAME.Logic.run(_NTTS);
 };
