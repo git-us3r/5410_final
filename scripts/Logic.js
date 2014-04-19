@@ -7,14 +7,15 @@
 
 GAME.Logic = (function(){
 
-	var that = {};
-	that.on = false;
-	that.interlude = false;
-	that.interludeDur = 4;
-	that.interludeCurrent = 0;
-	that.NTTS = {};
-	that.screenSwitch = false;
-	that.firstRun = true;
+	var	on = false
+		, lastTimeStamp = 0
+		, elapsedTime = 0
+		, interlude = false
+		, interludeDur = 4
+		, interludeCurrent = 0
+		, NTTS = {}
+		, screenSwitch = false
+		, firstRun = true;
 
 
 	/////
@@ -24,77 +25,77 @@ GAME.Logic = (function(){
 	//
 	///////
 
-	that.initialize = function (_NTTS, level){
+	function initialize (_NTTS, level){
 
-		that.NTTS = _NTTS;
+		NTTS = _NTTS;
 
-	};
+	}
 	
 
 
-	that.loop = function(time){
+	function loop(time){
 
-		if(that.on)	{
+		if(on)	{
 
-			that.elapsedTime = time - that.lastTimeStamp;
-			that.lastTimeStamp = time;
+			elapsedTime = time - lastTimeStamp;
+			lastTimeStamp = time;
 
 			// Time in seconds already.
-			that.update(that.elapsedTime / 1000); 
+			update(elapsedTime / 1000); 
 
 			GAME.Graphics.clear();
-			that.render(GAME.Graphics);
+			render(GAME.Graphics);
 
-			requestAnimationFrame(that.loop);
+			requestAnimationFrame(loop);
 		}
-	};
+	}
 	
 
 
-	that.update = function (elapsedTime){
+	function update (elapsedTime){
 
 		GAME.Input.update(elapsedTime);
 
-		if(that.interlude){
+		if(interlude){
 
-			that.interludeCurrent += elapsedTime;
+			interludeCurrent += elapsedTime;
 
-			if(that.interludeCurrent >= 1 && !that.screenSwitch && !that.firstRun){
+			if(interludeCurrent >= 1 && !screenSwitch && !firstRun){
 
 				GAME.gameState.currentLevel++;
-				//that.NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-				that.NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-				that.screenSwitch = true;
+				//NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+				NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+				screenSwitch = true;
 			}
-			if(that.interludeCurrent >= that.interludeDur){
+			if(interludeCurrent >= interludeDur){
 
 				// Necessary evil.
-				if(that.firstRun){
+				if(firstRun){
 
-					that.firstRun = false;
+					firstRun = false;
 				}
 
 
-				that.NTTS['NUMBERS'].restart();
-				that.interlude = false;
-				that.screenSwitch = false;
+				NTTS['NUMBERS'].restart();
+				interlude = false;
+				screenSwitch = false;
 				GAME.Input.collecting = true;
 			}
 			else{
 
-				that.NTTS['NUMBERS'].update(elapsedTime);
+				NTTS['NUMBERS'].update(elapsedTime);
 			}
 
 		}
 
 
-		if(!that.interlude){
+		if(!interlude){
 
-			for(var ntt in that.NTTS){
+			for(var ntt in NTTS){
 
-				if(ntt !== 'NUMBERS' && that.NTTS[ntt] && that.NTTS[ntt].update){
+				if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
 
-					that.NTTS[ntt].update(elapsedTime);
+					NTTS[ntt].update(elapsedTime);
 				}
 			}
 		}
@@ -102,90 +103,89 @@ GAME.Logic = (function(){
 
 
 
-		if (that.levelOver() && !that.interlude){
+		if (levelOver() && !interlude){
 			// TODO: implement the waiting period between levels
 			// all graphics need to be displayed and hold for a few seconds
 
 			GAME.Input.collecting = false;		// wow ... no privacy!
 
 
-			that.interludeCurrent = 0;
-			that.interlude  = true;
+			interludeCurrent = 0;
+			interlude  = true;
 
-			that.NTTS['NUMBERS'].restart();
-			that.screenSwitch = false;
+			NTTS['NUMBERS'].restart();
+			screenSwitch = false;
 						
 		}
 
-		//that.Input.update(elapsedTime);
-	};
+		//Input.update(elapsedTime);
+	}
 	
 
 
-	that.render = function(_graphics){
+	function render(_graphics){
 
-		if(that.interlude){
+		if(interlude){
 
-			for(var ntt in that.NTTS){
+			for(var ntt in NTTS){
 
-				if(that.NTTS[ntt] && that.NTTS[ntt].render){
+				if(NTTS[ntt] && NTTS[ntt].render){
 
-					that.NTTS[ntt].render(_graphics);
+					NTTS[ntt].render(_graphics);
 				}
 			}
 		}
 		else {
 
-			for(var ntt in that.NTTS){
+			for(var ntt in NTTS){
 
-				if(ntt !== 'NUMBERS' && that.NTTS[ntt] && that.NTTS[ntt].render){
+				if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].render){
 
-					that.NTTS[ntt].render(_graphics);
+					NTTS[ntt].render(_graphics);
 				}
 			}	
 		}
 
-	};
-
-
-
-	that.playSound = function(_sound) {
-
-		var tempSound = {};	
-		tempSound = that.sounds[_sound + '.' + that.audioExt].cloneNode();
-		tempSound.play();
-
-	};
+	}
 
 
 	
 
 
-	that.run = function(ntts){
+	function run(ntts){
 
-		that.on = true;
-		that.interlude = true;
-		that.initialize(ntts);
+		on = true;
+		interlude = true;
+		initialize(ntts);
 
 		//GAME.Input.startCollecting();
 
-		that.elapsedTime = 0;
-		that.lastTimeStamp = performance.now();
+		elapsedTime = 0;
+		lastTimeStamp = performance.now();
 
-		//that.PlaySound(that.Sounds.gamePlay)
+		//PlaySound(Sounds.gamePlay)
 
-		requestAnimationFrame(that.loop);
+		requestAnimationFrame(loop);
 	};
 
 
 
-	that.levelOver = function(){
+	function levelOver(){
 
-		return that.NTTS['BOMBS'].on();
+		return NTTS['BOMBS'].on();
 	};
 
 
-	return that;
+	return {
+
+		initialize : initialize,
+		loop : loop,
+		update : update,
+		render : render,
+		run : run,
+		levelOver : levelOver
+	};
+
 }());
 
 
