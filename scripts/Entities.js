@@ -233,8 +233,7 @@ GAME.NTTS = (function(){
 
 		ntts['NUMBERS'] = (function(){
 
-			var ntt = {}
-				, _images = {0 : images['GO'], 1 : images['number1'], 2 : images['number2'], 3 : images['number3']}
+			var _images = {0 : images['GO'], 1 : images['number1'], 2 : images['number2'], 3 : images['number3']}
 				, _width = 300
 				, _height = 300
 				, _center = {
@@ -242,48 +241,54 @@ GAME.NTTS = (function(){
 					x : 600,
 					y : 300
 				}
-				, _rotation = 0;
+				, _rotation = 0
+				, currentImage = 3
+				, specWidth = 300
+				, specHeight = 300
+				, spec;
 
-			ntt.currentImage = 3;
-			ntt.specWidth = 300;
-			ntt.specHeight = 300;
+			spec = Spec.create(_images[3], _width, _height, _center, _rotation);
 
-			ntt.spec = Spec.create(_images[3], _width, _height, _center, _rotation);
+			function update(_elapsedTime){
 
-			ntt.update = function(_elapsedTime){
+				spec.width -= _elapsedTime * specWidth;
+				spec.height -= _elapsedTime * specHeight;
 
-				ntt.spec.width -= _elapsedTime * ntt.specWidth;
-				ntt.spec.height -= _elapsedTime * ntt.specHeight;
+				if(spec.width <= 1 || spec.height <= 1){
 
-				if(ntt.spec.width <= 1 || ntt.spec.height <= 1){
+					spec.width = 300;
+					spec.height = 300;
 
-					ntt.spec.width = 300;
-					ntt.spec.height = 300;
-
-					ntt.currentImage--;
-					ntt.spec.image = _images[ntt.currentImage];
+					currentImage--;
+					spec.image = _images[currentImage];
 				}
 			};
 
 
-			ntt.render = function(_graphics){
+			function render(_graphics){
 
-				_graphics.drawImage(ntt.spec);
+				_graphics.drawImage(spec);
 			};
 
 
-			ntt.restart = function(){
+			function restart(){
 
-				ntt.spec.width = ntt.specWidth;
-				ntt.spec.height = ntt.specHeight;
+				spec.width = specWidth;
+				spec.height = specHeight;
 
-				ntt.currentImage = 3;
-				ntt.spec.image = _images[ntt.currentImage];
+				currentImage = 3;
+				spec.image = _images[currentImage];
 
 			};
 
 
-			return ntt;
+			return {
+
+				update : update,
+				render : render,
+				restart : restart
+
+			};
 
 		}());
 
