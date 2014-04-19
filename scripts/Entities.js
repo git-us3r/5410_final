@@ -107,10 +107,14 @@ GAME.NTTS = (function(){
 						glassImages.push(images['GlassNumbers'][countDown]);
 					}
 
-					var notificationObject = {
+					var notificationObject = function(){
 
-						func : playsound,
-						param : sounds.explosion
+						//func : playsound,
+						//param : sounds.explosion
+
+						// CHANGE:
+						// output to console for now
+						console.log('BAM');
 					};
 
 					var tempBomb = Bomb.create(notificationObject, images['BombImage']
@@ -245,12 +249,18 @@ GAME.NTTS = (function(){
 
 				if(ntts['BOMBS']['bombs'][bomb].on){
 
+					/*
 					if(ntts['BOMBS']['bombs'][bomb].hit(_clickLocation)){
 
 
 						playsound(sounds.hit);
 						ntts['BOMBS']['bombs'][bomb].safeRequest = true;
 					}
+					*/
+
+					// CHANGE:
+					// Use the new interface: call hit
+					ntts['BOMBS']['bombs'][bomb].hit(_clickLocation);					
 				}
 			}
 		}

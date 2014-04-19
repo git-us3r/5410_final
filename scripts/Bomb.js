@@ -69,7 +69,7 @@ var Bomb = (function(){
 						bomb.on = false;
 						bomb.exp = true;
 						bomb.currentCover = bomb.expMark;
-						_notify.func(_notify.param);
+						_notify();
 					}
 				}
 				
@@ -105,7 +105,17 @@ var Bomb = (function(){
 
 
 			// This works because the bomb is technically square
-			return (differenceVectorMagnitude <= .35 * bomb.width);
+			//return (differenceVectorMagnitude <= .35 * bomb.width);
+
+			// CHANGE:
+			// Encapsulation. This function will notify itself.
+			// It will be void.
+
+			// It will become safe during update.
+			if((differenceVectorMagnitude <= .35 * bomb.width)){
+
+				bomb.safeRequest = true;
+			}
 
 		};
 
