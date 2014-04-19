@@ -24,6 +24,8 @@ GAME.NTTS = (function(){
 	images['number2'] = GAME['images']['images/number2.png'];
 	images['number3'] = GAME['images']['images/number3.png'];
 	images['GO'] = GAME['images']['images/GO.png'];
+	images['loose'] = GAME['images']['images/loose.png'];
+	images['win'] = GAME['images']['images/win.png'];
 
 	images['GlassNumbers'] = [];
 
@@ -265,6 +267,95 @@ GAME.NTTS = (function(){
 			};
 
 		}(_levelParameters));
+
+
+
+
+		ntts['RESULT'] = (function(){
+
+			var _images = {loose : images['loose'], win : images['win']}
+				, _width = 600
+				, _height = 300
+				, _center = {
+
+					x : 600,
+					y : 300
+				}
+				, _rotation = 0
+				, spec
+				, duration = 2
+				, currentTime = 0
+				, on = false
+				, msgLoose = {}
+				, msgWin = {}
+				, currentSpec = {};
+
+			msgLoose = Spec.create(_images.loose, _width, _height, _center, _rotation);
+			msgWin = Spec.create(_images.win, _width, _height, _center, _rotation);
+
+
+
+			function update(_elapsedTime){
+
+				if(on){
+					currentTime += _elapsedTime;
+
+					if(currentTime > duration){
+
+						currentTime = 0;
+						on = false;
+					}
+				}
+			};
+
+
+
+			function render(_graphics){
+
+				if(on){
+
+					_graphics.drawImage(currentSpec);
+				}
+			};
+
+
+			function setResult(_result){
+
+				if(_result === 'win'){
+
+					currentSpec = msgWin;
+				}
+				else if(_result === 'loose') {
+
+					currentSpec = msgLoose;
+				}
+			}
+
+
+			function initialize(){
+
+				on = true;
+				currentTime = 0;
+			}
+
+			function isOn(){
+
+				return on;
+			}
+
+
+			return {
+
+				initialize : initialize,
+				render : render,
+				setResult : setResult,
+				update : update,
+				on : isOn
+			};
+
+
+		}());
+
 
 
 

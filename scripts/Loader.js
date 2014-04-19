@@ -61,6 +61,8 @@ window.addEventListener('load', function() {
 				'preload!images/star_purple.png',
 				'preload!images/exp-center.png',
 				'preload!images/GO.png',	
+				'preload!images/win.png',
+				'preload!images/loose.png',
 				'preload!scripts/random.js',
 				'preload!scripts/Vector2d.js',
 				'preload!scripts/particle-system-exp.js',

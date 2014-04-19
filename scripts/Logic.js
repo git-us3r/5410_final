@@ -15,7 +15,8 @@ GAME.Logic = (function(){
 		, interludeCurrent = 0
 		, NTTS = {}
 		, screenSwitch = false
-		, firstRun = true;
+		, firstRun = true
+		, resultsScreen = false;
 
 
 	/////
@@ -109,7 +110,32 @@ GAME.Logic = (function(){
 	function looseInterlude(){
 
 		// TODO: implement
-		winInterlude();
+		resultsScreen = true;
+		NTTS['RESULT'].setResult('loose');
+		NTTS['RESULT'].initialize();
+
+	}
+
+
+	function winInterlude(){
+
+		resultsScreen = true;
+		NTTS['RESULT'].setResult('win');
+		NTTS['RESULT'].initialize();
+	}
+
+
+
+	function updateResults (elapsedTime) {
+		
+		NTTS['RESULT'].update(elapsedTime);
+
+		if(!NTTS['RESULT'].on()){
+
+			resultsScreen = false;
+			go2Interlude();
+
+		}
 	}
 
 
@@ -134,7 +160,7 @@ GAME.Logic = (function(){
 	}
 
 
-	function winInterlude(){
+	function go2Interlude(){
 
 		GAME.Input.collecting = false;		// wow ... no privacy!
 
@@ -154,6 +180,10 @@ GAME.Logic = (function(){
 		if(interlude){
 
 			updateInterlude(elapsedTime);
+		}
+		else if(resultsScreen){
+
+			updateResults(elapsedTime);
 		}
 		else{
 
