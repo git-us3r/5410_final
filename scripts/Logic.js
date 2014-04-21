@@ -13,6 +13,9 @@ GAME.Logic = (function(){
 		, interlude = false
 		, interludeDur = 4
 		, interludeCurrent = 0
+		, initialDelay = 1
+		, delayOver = 3
+		, delayCtr = 0
 		, NTTS = {}
 		, screenSwitch = false
 		, firstRun = true
@@ -71,6 +74,8 @@ GAME.Logic = (function(){
 
 			setLevel();
 			screenSwitch = true;
+			NTTS['BOMBS'].setVisible();
+
 		}
 		if(interludeCurrent >= interludeDur){
 
@@ -80,7 +85,8 @@ GAME.Logic = (function(){
 				firstRun = false;
 			}
 
-
+			delayCtr = 0;
+			NTTS['BACKGROUND'].ResetBackground();
 			NTTS['NUMBERS'].restart();
 			interlude = false;
 			screenSwitch = false;
@@ -89,6 +95,7 @@ GAME.Logic = (function(){
 		else{
 
 			NTTS['NUMBERS'].update(elapsedTime);
+			NTTS['BACKGROUND'].update(elapsedTime);
 		}
 	}
 
@@ -113,6 +120,9 @@ GAME.Logic = (function(){
 		resultsScreen = true;
 		NTTS['RESULT'].setResult('loose');
 		NTTS['RESULT'].initialize();
+		NTTS['RESULT'].setInvisible();
+		NTTS['BACKGROUND'].InterludeOn();
+
 
 	}
 
@@ -122,17 +132,31 @@ GAME.Logic = (function(){
 		resultsScreen = true;
 		NTTS['RESULT'].setResult('win');
 		NTTS['RESULT'].initialize();
+		NTTS['RESULT'].setInvisible();
+		NTTS['BACKGROUND'].InterludeOn();
+
 	}
 
 
 
 	function updateResults (elapsedTime) {
 		
-		NTTS['RESULT'].update(elapsedTime);
+		delayCtr += elapsedTime;
 
-		if(!NTTS['RESULT'].on()){
+		NTTS['BACKGROUND'].update(elapsedTime);
+
+
+		if(delayCtr >= initialDelay && !NTTS['RESULT'].isVisible()){
+
+			NTTS['RESULT'].setVisible();
+			NTTS['BOMBS'].setInvisible();
+		}
+
+
+		if(delayCtr >= delayOver){
 
 			resultsScreen = false;
+			NTTS['RESULT'].setInvisible();
 			go2Interlude();
 
 		}
@@ -141,7 +165,6 @@ GAME.Logic = (function(){
 
 
 	function checkLevelResults(){
-
 
 		if(NTTS['BOMBS'].allSafe()){
 
@@ -191,6 +214,7 @@ GAME.Logic = (function(){
 
 			if (levelOver()){
 
+				delayCtr = 0;
 				checkLevelResults();
 			}
 		}
@@ -202,6 +226,7 @@ GAME.Logic = (function(){
 
 		if(interlude){
 
+			
 			for(var ntt in NTTS){
 
 				if(NTTS[ntt] && NTTS[ntt].render){

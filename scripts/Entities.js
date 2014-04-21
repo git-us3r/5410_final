@@ -51,6 +51,11 @@ GAME.NTTS = (function(){
 
 			// Background NTT
 			var spec = {}
+				, minDelay = 1
+				, delay = 3
+				, midDelay = 2
+				, currentDelay = 0
+				, interlude = false
 				, _image = images['BK']
 				, _width = 1200
 				, _height = 600
@@ -71,7 +76,44 @@ GAME.NTTS = (function(){
 
 			function update(_elapsedTime){
 
-				// EMPTY
+				if(interlude){
+
+					currentDelay += _elapsedTime;
+					if(currentDelay >= minDelay && currentDelay < midDelay){
+
+						spec.width = Math.max(spec.width - _elapsedTime * _width, 0);
+						spec.height = Math.max(spec.height - _elapsedTime * _height, 0);
+					}
+					else if(currentDelay >= midDelay && currentDelay < delay)
+					{
+						spec.width = Math.min(spec.width - _elapsedTime * _width, 0);
+						spec.height = Math.min(spec.height - _elapsedTime * _height, 0);	
+					}
+					else{
+
+						spec.width = _width;
+						spec.height = _height;
+					}
+				}
+
+			}
+
+
+			function InterludeOn(){
+
+				interlude = true;
+
+			}
+
+
+			function ResetBackground(){
+
+				interlude = false;
+				currentDelay = 0;
+
+				spec.width = _width;
+				spec.height = _height;
+				
 			}
 
 
@@ -79,7 +121,9 @@ GAME.NTTS = (function(){
 			return {
 
 				render : render,
-				update : update
+				update : update,
+				InterludeOn : InterludeOn,
+				ResetBackground : ResetBackground
 			};
 
 		}());
@@ -109,7 +153,8 @@ GAME.NTTS = (function(){
 					{x : 800, y : 400}
 
 				]
-				, bombs = {};
+				, bombs = {}
+				, visible = true;
 
 
 			function initializeBombs(_levelTimers){
@@ -167,10 +212,14 @@ GAME.NTTS = (function(){
 
 			function render(_graphics){
 
-				for (var bomb in bombs){
-					if(bombs.hasOwnProperty(bomb)){
+				if(visible){
 
-						bombs[bomb].render(_graphics);
+					for (var bomb in bombs){
+					
+						if(bombs.hasOwnProperty(bomb)){
+
+							bombs[bomb].render(_graphics);
+						}
 					}
 				}
 			}
@@ -253,16 +302,37 @@ GAME.NTTS = (function(){
 			}
 
 
+			function setVisible(){
+
+				visible = true;
+			}
+
+
+			function setInvisible(){
+
+				visible = false;
+			}
+
+
+			function isVisible(){
+
+				return visible;
+			}
+
+
 
 			return {
 
+				isVisible : isVisible,
 				initializeBombs : initializeBombs,
 				update : update,
 				render : render,
 				reset : reset,
 				on : on,
 				checkClick : checkClick,
-				allSafe : allSafe
+				allSafe : allSafe,
+				setVisible : setVisible,
+				setInvisible : setInvisible
 
 			};
 
@@ -283,12 +353,14 @@ GAME.NTTS = (function(){
 				}
 				, _rotation = 0
 				, spec
-				, duration = 2
+				, duration = 3
 				, currentTime = 0
 				, on = false
 				, msgLoose = {}
 				, msgWin = {}
-				, currentSpec = {};
+				, currentSpec = {}
+				, delay = 1
+				, visible = true;
 
 			msgLoose = Spec.create(_images.loose, _width, _height, _center, _rotation);
 			msgWin = Spec.create(_images.win, _width, _height, _center, _rotation);
@@ -297,7 +369,8 @@ GAME.NTTS = (function(){
 
 			function update(_elapsedTime){
 
-				if(on){
+				/*
+				if(on && visible){
 					currentTime += _elapsedTime;
 
 					if(currentTime > duration){
@@ -306,13 +379,14 @@ GAME.NTTS = (function(){
 						on = false;
 					}
 				}
+				*/
 			};
 
 
 
 			function render(_graphics){
 
-				if(on){
+				if(on && visible){
 
 					_graphics.drawImage(currentSpec);
 				}
@@ -336,6 +410,7 @@ GAME.NTTS = (function(){
 
 				on = true;
 				currentTime = 0;
+				delayDur = 0;
 			}
 
 			function isOn(){
@@ -344,13 +419,34 @@ GAME.NTTS = (function(){
 			}
 
 
+
+			function setVisible(){
+
+				visible = true;
+			}
+
+
+			function setInvisible(){
+
+				visible = false;
+			}
+
+			function isVisible(){
+
+				return visible;
+			}
+
+
 			return {
 
+				isVisible : isVisible,
 				initialize : initialize,
 				render : render,
 				setResult : setResult,
 				update : update,
-				on : isOn
+				on : isOn,
+				setVisible : setVisible,
+				setInvisible : setInvisible
 			};
 
 
@@ -373,7 +469,8 @@ GAME.NTTS = (function(){
 				, currentImage = 3
 				, specWidth = 300
 				, specHeight = 300
-				, spec;
+				, spec
+				, visible = true;
 
 			spec = Spec.create(_images[3], _width, _height, _center, _rotation);
 
@@ -395,7 +492,10 @@ GAME.NTTS = (function(){
 
 			function render(_graphics){
 
-				_graphics.drawImage(spec);
+				if(visible)
+				{
+					_graphics.drawImage(spec);
+				}
 			};
 
 
@@ -410,8 +510,27 @@ GAME.NTTS = (function(){
 			};
 
 
+			function setVisible(){
+
+				visible = true;
+			}
+
+
+			function setInvisible(){
+
+				visible = false;
+			}
+
+			function isVisible(){
+
+				return visible;
+			}
+
 			return {
 
+				isVisible : isVisible,
+				setVisible : setVisible,
+				setInvisible : setInvisible,
 				update : update,
 				render : render,
 				restart : restart

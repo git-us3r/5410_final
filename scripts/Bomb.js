@@ -11,6 +11,7 @@ var Bomb = (function(){
 	function create(_notify, _bombImage, _glassNumbers, _checkMark, _expMark, _width, _height, _center, _rotation, _duration, _visible){
 
 		var bomb = {}
+			, secondsRemaining = _glassNumbers.length
 			, bombImage = _bombImage
 			, checkMark = _checkMark
 			, expMark = _expMark
@@ -42,6 +43,7 @@ var Bomb = (function(){
 			if(on && secondsCtr > 1){
 
 				secondsCtr = 0;
+				secondsRemaining--;
 
 				// Check if it has been clicked.
 				if(safeRequest){
@@ -55,7 +57,7 @@ var Bomb = (function(){
 				 	on = false;
 				 	currentCover = checkMark;
 				}
-				else if (currentGlassNumber < maxGlassNumber){					
+				else if (secondsRemaining >= 0){					
 						
 					currentGlassNumber++;
 
@@ -75,6 +77,7 @@ var Bomb = (function(){
 				
 			}
 		}
+
 
 
 		// Rendering must happen unconditionally, because the canvas is cleared every frame.
@@ -125,6 +128,7 @@ var Bomb = (function(){
 		bomb.hit = hit;
 		bomb.on = function(){return on;};
 		bomb.safe = function(){return safe;};
+		bomb.getSecondsRemaining = function(){return secondsRemaining;};
 		return bomb;
 	}
 
