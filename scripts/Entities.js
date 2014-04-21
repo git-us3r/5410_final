@@ -43,7 +43,7 @@ GAME.NTTS = (function(){
 
 
 
-	function initialize(_levelParameters){
+	function initialize(_bombNotify, _levelParameters){
 
 		///////
 		// BACKGROUND ... lol
@@ -139,7 +139,7 @@ GAME.NTTS = (function(){
 		// 2) the countdown start number for each bomb
 		//
 		/////////
-		ntts['BOMBS'] = (function(_levelTimers){
+		ntts['BOMBS'] = (function(_bombNotify, _levelTimers){
 
 			var bombDimension = 150
 				, bombCoverDim = 90
@@ -157,7 +157,7 @@ GAME.NTTS = (function(){
 				, visible = true;
 
 
-			function initializeBombs(_levelTimers){
+			function initializeBombs(_bombNotify, _levelTimers){
 
 				for(var i = 0; i < _levelTimers.length; i++){
 
@@ -167,17 +167,7 @@ GAME.NTTS = (function(){
 						glassImages.push(images['GlassNumbers'][countDown]);
 					}
 
-					var notificationObject = function(){
-
-						//func : playsound,
-						//param : sounds.explosion
-
-						// CHANGE:
-						// output to console for now
-						console.log('BAM');
-					};
-
-					var tempBomb = Bomb.create(notificationObject, images['BombImage']
+					var tempBomb = Bomb.create(_bombNotify, images['BombImage']
 												, glassImages
 												, images['checkMark']
 												, images['expMark']
@@ -193,7 +183,7 @@ GAME.NTTS = (function(){
 			}
 
 			// call it right now plz
-			initializeBombs(_levelTimers);
+			initializeBombs(_bombNotify, _levelTimers);
 
 
 
@@ -229,7 +219,7 @@ GAME.NTTS = (function(){
 			function reset(_levelTimers){
 
 				bombs = {};
-				initializeBombs(_levelTimers);
+				initializeBombs(_bombNotify, _levelTimers);
 
 			};
 
@@ -319,10 +309,23 @@ GAME.NTTS = (function(){
 				return visible;
 			}
 
+			function getSecondsRemaining()
+			{
+				var secs = [];
+				for(var bomb in bombs)
+				{
+					secs.push(bomb.getSecondsRemaining());
+				}
+
+				return secs;
+
+			}
+
 
 
 			return {
 
+				getSecondsRemaining : getSecondsRemaining,
 				isVisible : isVisible,
 				initializeBombs : initializeBombs,
 				update : update,
@@ -336,7 +339,7 @@ GAME.NTTS = (function(){
 
 			};
 
-		}(_levelParameters));
+		}(_bombNotify, _levelParameters));
 
 
 

@@ -51,6 +51,7 @@ GAME.Graphics = (function(){
 	// Expose a graphics object to the particles.
 	return {
 
+		getContext : function(){return context;},
 		initialize : initialize,
 		canvasDim : getCanvasDim,
 		clear : clear,

@@ -19,7 +19,8 @@ GAME.Logic = (function(){
 		, NTTS = {}
 		, screenSwitch = false
 		, firstRun = true
-		, resultsScreen = false;
+		, resultsScreen = false
+		, Score = {};
 
 
 	/////
@@ -29,9 +30,10 @@ GAME.Logic = (function(){
 	//
 	///////
 
-	function initialize (_NTTS, level){
+	function initialize (_NTTS, _score){
 
 		NTTS = _NTTS;
+		Score = _score
 
 	}
 	
@@ -168,6 +170,9 @@ GAME.Logic = (function(){
 
 		if(NTTS['BOMBS'].allSafe()){
 
+			/// Check scores, and time here.
+			// TODO:
+
 			GAME.gameState.currentLevel++;
 			winInterlude();
 
@@ -199,6 +204,7 @@ GAME.Logic = (function(){
 	function update (elapsedTime){
 
 		GAME.Input.update(elapsedTime);
+		Score.update(elapsedTime);
 
 		if(interlude){
 
@@ -246,17 +252,19 @@ GAME.Logic = (function(){
 			}	
 		}
 
+		Score.render(_graphics);
+
 	}
 
 
 	
 
 
-	function run(ntts){
+	function run(_ntts, _score){
 
 		on = true;
 		interlude = true;
-		initialize(ntts);
+		initialize(_ntts, _score);
 
 		//GAME.Input.startCollecting();
 
@@ -289,14 +297,74 @@ GAME.Logic = (function(){
 }());
 
 
+GAME.Score = (function(){
+
+	var score = 0
+		, mult = 2
+		, explosionPenalty = 5
+		, center = {x : 800, y : 100};
+
+	function bombNotification(_status, _timeRemaining){
+
+		if(_status === 'safe')
+		{
+			score += Math.max(_timeRemaining * mult, mult);
+		}
+		else if (_status === 'exp')
+		{
+			score = Math.max(score - explosionPenalty, 0);
+		}
+
+	}
+
+	function reportScore(){return score};
+
+	function resetScore(){score = 0;}
+
+	function update(){
+
+		// EMPTY
+	}
+
+
+	function render(_graphics){
+
+		var ctx = _graphics.getContext();
+		ctx.save();
+
+		ctx.translate(center.x, center.y);
+		
+
+		ctx.font = '60px Arial';
+		ctx.fillText('SCORE ' + score, 0, 0);	
+
+		ctx.translate(-center.x, -center.y);			
+		
+		ctx.restore();
+	}
+
+
+	return {
+
+		update : update,
+		render : render,
+		bombNotification : bombNotification,
+		reportScore : reportScore,
+		resetScore : resetScore
+
+	};
+
+}());
+
+
 
 
 GAME.run = function(){
 
 	GAME.gameState.randomizeTimers();
-	var _NTTS = GAME.NTTS.initialize(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
 	GAME.Input = Input;
 	GAME.Input.bind2Window();
 	GAME.Input.registerCommand(_NTTS['BOMBS'].checkClick);
-	GAME.Logic.run(_NTTS);
+	GAME.Logic.run(_NTTS, GAME.Score);
 };

@@ -56,6 +56,7 @@ var Bomb = (function(){
 
 				 	on = false;
 				 	currentCover = checkMark;
+				 	_notify('safe', secondsRemaining);
 				}
 				else if (secondsRemaining >= 0){					
 						
@@ -71,7 +72,7 @@ var Bomb = (function(){
 						on = false;
 						exp = true;
 						currentCover = expMark;
-						_notify();
+						_notify('exp');
 					}
 				}
 				
