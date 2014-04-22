@@ -1,3 +1,4 @@
+'use strict';
 ///////
 //
 // _levelParameters is an array of numbers
@@ -413,7 +414,7 @@ GAME.NTTS = (function(){
 
 				on = true;
 				currentTime = 0;
-				delayDur = 0;
+				//delayDur = 0;
 			}
 
 			function isOn(){

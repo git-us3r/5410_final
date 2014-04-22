@@ -1,10 +1,16 @@
-'use strict';
+
 
 GAME.gameState = (function(){
 
-	var state = {};
+	'use strict';
 
-	state.bombTimers = {
+	var state = {}
+		, maxLevel = 5
+		, currentLevel = 1
+		, gameOver = -1;
+
+	//state.bombTimers = { ...
+	var bombTimers = {	
 
 		1 : [3,3,2,2,1,1],
 		2 : [4,3,2],
@@ -17,6 +23,7 @@ GAME.gameState = (function(){
 
 	state.randomizeTimers = function (){
 
+
 		for(var bombTimer in state.bombTimers){
 
 			if(state.bombTimers.hasOwnProperty(bombTimer)){
@@ -28,8 +35,32 @@ GAME.gameState = (function(){
 	}
 
 
-	state.maxLevel = 5;
-	state.currentLevel = 1;
+	//state.maxLevel = 5;
+	//state.currentLevel = 1;
+
+	state.levelUp = function(){
+
+		if(currentLevel === maxLevel)
+		{
+			// game over
+			return gameOver;
+		}
+		else if(currentLevel < maxLevel){
+
+			// a little redundance never hurts ...
+			currentLevel++;
+			return currentLevel;
+
+		}
+
+
+	}
+
+
+	state.bombTimers = function(){
+
+		return bombTimers[currentLevel];
+	}
 
 	return state;
 

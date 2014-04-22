@@ -6,6 +6,8 @@
 // A vector is any object with the following interface: {x: number, y: number}
 
 var Vector2d = (function(){
+
+	'use strict';
 	
 	var that = {};
 

@@ -1,8 +1,9 @@
-'use strict';
+
 
 GAME.Sounds = (function(){
 
-
+	'use strict';
+	
 	function playSound (_sound) {
 
 		//var tempSound = {};	

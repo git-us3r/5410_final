@@ -8,6 +8,8 @@
 
 var Spec = (function(){
 
+	'use strict';
+
 
 	function create(_image, _width, _height, _center, _rotation){
 	

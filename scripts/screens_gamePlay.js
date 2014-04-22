@@ -1,5 +1,6 @@
 GAME.screens['game-play'] = (function(){
-
+	'use strict';
+	
 	function initialize() {
 		/*
 		document.getElementById('game-play-back').addEventListener(

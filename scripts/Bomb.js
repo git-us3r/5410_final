@@ -1,3 +1,4 @@
+'use strict';
 var Bomb = (function(){
 
 	var uniqueId = 0;

@@ -60,7 +60,8 @@ GAME.Logic = (function(){
 	function setLevel (argument) {
 
 		// TODO: determine if it should switch to a new level or repeat the old one.
-		NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+		//NTTS['BOMBS'].reset(GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+		NTTS['BOMBS'].reset(GAME.gameState.bombTimers());
 	}
 
 
@@ -106,7 +107,6 @@ GAME.Logic = (function(){
 	function updateGame(elapsedTime){
 
 		for(var ntt in NTTS){
-
 			if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
 
 				NTTS[ntt].update(elapsedTime);
@@ -173,18 +173,28 @@ GAME.Logic = (function(){
 			/// Check scores, and time here.
 			// TODO:
 
-			GAME.gameState.currentLevel++;
-			winInterlude();
+			//GAME.gameState.currentLevel++;
+			//winInterlude();
+
+
+			var tempState = GAME.gameState.levelUp();
+			if(tempState === -1){
+
+				// Game over:
+				// TODO: set the scores
+
+				gameOverInterlude();
+			}
+			else{
+
+				winInterlude();
+			}
 
 		}
 		else{
 
 			looseInterlude();
 		}
-
-
-		
-
 	}
 
 
@@ -362,7 +372,8 @@ GAME.Score = (function(){
 GAME.run = function(){
 
 	GAME.gameState.randomizeTimers();
-	var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	//var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
+	var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers());
 	GAME.Input = Input;
 	GAME.Input.bind2Window();
 	GAME.Input.registerCommand(_NTTS['BOMBS'].checkClick);
