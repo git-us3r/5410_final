@@ -5,7 +5,7 @@ GAME.gameState = (function(){
 	'use strict';
 
 	var state = {}
-		, maxLevel = 5
+		, maxLevel = 2
 		, currentLevel = 1
 		, gameOver = -1;
 
@@ -24,11 +24,11 @@ GAME.gameState = (function(){
 	state.randomizeTimers = function (){
 
 
-		for(var bombTimer in state.bombTimers){
+		for(var bombTimer in bombTimers){
 
-			if(state.bombTimers.hasOwnProperty(bombTimer)){
+			if(bombTimers.hasOwnProperty(bombTimer)){
 
-				state.bombTimers[bombTimer] = Random.randArrayPermutation(state.bombTimers[bombTimer]);
+				bombTimers[bombTimer] = Random.randArrayPermutation(bombTimers[bombTimer]);
 			}
 		}
 
@@ -60,6 +60,12 @@ GAME.gameState = (function(){
 	state.bombTimers = function(){
 
 		return bombTimers[currentLevel];
+	}
+
+
+	state.reset = function(){
+
+		currentLevel = 1;
 	}
 
 	return state;

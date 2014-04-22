@@ -33,7 +33,19 @@ GAME.Logic = (function(){
 	function initialize (_NTTS, _score){
 
 		NTTS = _NTTS;
-		Score = _score
+		Score = _score;
+		on = true;
+		lastTimeStamp = 0;
+		elapsedTime = 0;
+		interlude = true;
+		interludeDur = 4;
+		interludeCurrent = 0;
+		initialDelay = 1;
+		delayOver = 3;
+		delayCtr = 0;
+		screenSwitch = false;
+		firstRun = true;
+		resultsScreen = false;
 
 	}
 	
@@ -89,6 +101,8 @@ GAME.Logic = (function(){
 			}
 
 			delayCtr = 0;
+			//GAME.gameState.randomizeTimers();
+			//NTTS['BOMBS'].initializeBombs(GAME.Logic.bombNotification, GAME.gameState.bombTimers());
 			NTTS['BACKGROUND'].ResetBackground();
 			NTTS['NUMBERS'].restart();
 			interlude = false;
@@ -165,6 +179,14 @@ GAME.Logic = (function(){
 	}
 
 
+	function gameOverInterlude(){
+
+		on = false;
+		ScreenEngine.showScreen('main-menu', GAME['screens']);
+
+	}
+
+
 
 	function checkLevelResults(){
 
@@ -182,7 +204,7 @@ GAME.Logic = (function(){
 
 				// Game over:
 				// TODO: set the scores
-
+				Storage.add(Score.reportScore());
 				gameOverInterlude();
 			}
 			else{
@@ -272,8 +294,6 @@ GAME.Logic = (function(){
 
 	function run(_ntts, _score){
 
-		on = true;
-		interlude = true;
 		initialize(_ntts, _score);
 
 		//GAME.Input.startCollecting();
@@ -294,6 +314,13 @@ GAME.Logic = (function(){
 	};
 
 
+	function bombNotification(_status, _timeRemaining, _location){
+
+		Score.processAction(_status, _timeRemaining);
+		NTTS['EXP'].setExplosion(_location);
+	}
+
+
 	return {
 
 		initialize : initialize,
@@ -301,7 +328,8 @@ GAME.Logic = (function(){
 		update : update,
 		render : render,
 		run : run,
-		levelOver : levelOver
+		levelOver : levelOver,
+		bombNotification : bombNotification
 	};
 
 }());
@@ -314,7 +342,7 @@ GAME.Score = (function(){
 		, explosionPenalty = 5
 		, center = {x : 800, y : 100};
 
-	function bombNotification(_status, _timeRemaining){
+	function processAction(_status, _timeRemaining){
 
 		if(_status === 'safe')
 		{
@@ -358,7 +386,7 @@ GAME.Score = (function(){
 
 		update : update,
 		render : render,
-		bombNotification : bombNotification,
+		processAction : processAction,
 		reportScore : reportScore,
 		resetScore : resetScore
 
@@ -371,9 +399,10 @@ GAME.Score = (function(){
 
 GAME.run = function(){
 
+	GAME.gameState.reset();
 	GAME.gameState.randomizeTimers();
 	//var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
-	var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers());
+	var _NTTS = GAME.NTTS.initialize(GAME.Logic.bombNotification, GAME.gameState.bombTimers());
 	GAME.Input = Input;
 	GAME.Input.bind2Window();
 	GAME.Input.registerCommand(_NTTS['BOMBS'].checkClick);

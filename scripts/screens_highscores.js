@@ -13,7 +13,7 @@ GAME.screens['high-scores'] = (function() {
 	
 	function run(){
 
-		// EMPTY
+		Storage.report();
 	}
 	
 	return {

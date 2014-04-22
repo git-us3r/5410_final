@@ -63,6 +63,7 @@ window.addEventListener('load', function() {
 				'preload!images/GO.png',	
 				'preload!images/win.png',
 				'preload!images/loose.png',
+				'preload!scripts/Persistence.js',
 				'preload!scripts/random.js',
 				'preload!scripts/Vector2d.js',
 				'preload!scripts/particle-system-exp.js',

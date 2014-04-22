@@ -1,4 +1,4 @@
-'use strict';
+
 ///////
 //
 // _levelParameters is an array of numbers
@@ -8,6 +8,8 @@
 ////////////
 
 GAME.NTTS = (function(){
+
+	'use strict';
 
 	var ntts = {}
 		, sounds = GAME.Sounds.PossibleSounds
@@ -159,6 +161,9 @@ GAME.NTTS = (function(){
 
 
 			function initializeBombs(_bombNotify, _levelTimers){
+
+				//bombs = {};
+				//randomize();
 
 				for(var i = 0; i < _levelTimers.length; i++){
 
@@ -323,6 +328,34 @@ GAME.NTTS = (function(){
 			}
 
 
+			// A bit involved, since bombs is not an array and thus
+			// it doesn't have a length property.
+			////////
+			function randomize(){
+
+				//bombs = Random.randArrayPermutation(bombs);
+				var tempArray = [];
+				for(var bomb in bombs){
+
+					if(bombs.hasOwnProperty(bomb)){
+
+						tempArray.push(bombs[bomb]);
+					}
+				}
+
+				tempArray = Random.randArrayPermutation(tempArray);
+
+				// Clear bombs object.
+				bombs = {};
+
+				for(var i = 0; i < tempArray.length; i++){
+
+					bombs[i] = tempArray[i];
+				}
+
+			}
+
+
 
 			return {
 
@@ -336,7 +369,8 @@ GAME.NTTS = (function(){
 				checkClick : checkClick,
 				allSafe : allSafe,
 				setVisible : setVisible,
-				setInvisible : setInvisible
+				setInvisible : setInvisible,
+				randomize : randomize
 
 			};
 
@@ -541,6 +575,25 @@ GAME.NTTS = (function(){
 
 			};
 
+		}());
+
+
+		
+		ntts['EXP'] = (function(){
+
+			function update(){}
+
+			function render(){}
+
+			function setExplosion(_location){}
+
+
+			return {
+
+				update : update,
+				render : render,
+				setExplosion : setExplosion
+			}
 		}());
 
 
