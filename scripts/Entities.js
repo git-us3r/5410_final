@@ -328,34 +328,6 @@ GAME.NTTS = (function(){
 			}
 
 
-			// A bit involved, since bombs is not an array and thus
-			// it doesn't have a length property.
-			////////
-			function randomize(){
-
-				//bombs = Random.randArrayPermutation(bombs);
-				var tempArray = [];
-				for(var bomb in bombs){
-
-					if(bombs.hasOwnProperty(bomb)){
-
-						tempArray.push(bombs[bomb]);
-					}
-				}
-
-				tempArray = Random.randArrayPermutation(tempArray);
-
-				// Clear bombs object.
-				bombs = {};
-
-				for(var i = 0; i < tempArray.length; i++){
-
-					bombs[i] = tempArray[i];
-				}
-
-			}
-
-
 
 			return {
 
@@ -369,8 +341,7 @@ GAME.NTTS = (function(){
 				checkClick : checkClick,
 				allSafe : allSafe,
 				setVisible : setVisible,
-				setInvisible : setInvisible,
-				randomize : randomize
+				setInvisible : setInvisible
 
 			};
 

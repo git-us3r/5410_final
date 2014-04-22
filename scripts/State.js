@@ -59,6 +59,7 @@ GAME.gameState = (function(){
 
 	state.bombTimers = function(){
 
+		state.randomizeTimers();
 		return bombTimers[currentLevel];
 	}
 
