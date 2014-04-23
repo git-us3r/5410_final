@@ -33,7 +33,7 @@ function particleSystem(spec, graphics) {
 				image: spec.image,
 				size: Random.nextGaussian(10, 4),
 				center: {x: spec.center.x, y: spec.center.y},
-				direction: Random.nextCircleVector(),
+				velocity: Random.nextCircleVector(),
 				acceleration : {x : 0, y : 0},
 				width: spec.width,
 				height: spec.height,
@@ -45,6 +45,8 @@ function particleSystem(spec, graphics) {
 				alive: 0	// How long the particle has been alive, in seconds
 			};
 		
+		p.acceleration = p.velocity;
+
 		//
 		// Ensure we have a valid size - gaussian numbers can be negative
 		p.size = Math.max(1, p.size);
@@ -56,10 +58,12 @@ function particleSystem(spec, graphics) {
 
 		p.fall = function(elapsedTime){
 
-			var gravityIsAB = { x : 0, y : 9.80 };
+			var gravityIsAB = { x : 0, y : 0.5 };
 
-			p.direction = Vector2d.add(gravityIsAB, p.direction);
-			p.direction = Vector2d.scale(p.speed, p.direction);
+			p.acceleration = Vector2d.add(p.acceleration, gravityIsAB);
+
+			p.velocity = Vector2d.add(p.acceleration, p.velocity);
+			p.center = Vector2d.add(p.center, Vector2d.scale(p.speed, p.velocity));
 
 		};
 
@@ -102,9 +106,9 @@ function particleSystem(spec, graphics) {
 			    // scales the direction vector by the distance traveled ( time * speed ) and adds
 			    // the result to the postition vector.
                 //
-                // particle.fall(elapsedTime);
-				particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
-				particle.center.y += (elapsedTime * particle.speed * particle.direction.y + 10);
+                particle.fall(elapsedTime);
+				// particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
+				// particle.center.y += (elapsedTime * particle.speed * particle.direction.y);
 				
 
 

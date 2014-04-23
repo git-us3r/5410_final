@@ -238,11 +238,12 @@ GAME.NTTS = (function(){
 
 			};
 
-			function on(){
+
+			function done(){
 
 				var over = true;
 
-				// If at least one bomb is on, the leve goes on.
+				// If at least one bomb is on, the level goes on.
 				for(var bomb in bombs){
 
 					if(bombs.hasOwnProperty(bomb)){
@@ -289,7 +290,6 @@ GAME.NTTS = (function(){
 
 				var allSafe = true;
 
-				// If at least one bomb is on, the leve goes on.
 				for(var bomb in bombs){
 
 					if(bombs.hasOwnProperty(bomb)){
@@ -346,7 +346,7 @@ GAME.NTTS = (function(){
 				update : update,
 				render : render,
 				reset : reset,
-				on : on,
+				done : done,
 				checkClick : checkClick,
 				allSafe : allSafe,
 				setVisible : setVisible,
@@ -597,38 +597,27 @@ GAME.NTTS = (function(){
 				// Define explosion parameters and use Explosion to save
 				// an instance of an explosion.
 
-				var spec1 = {}
-					, spec2 = {}
+				var howManySpecs = 4
 					, pics = []
 					, xparam = {}
 					, exp = {}
 					, dur = 3;
-				
-				spec1.image = images['starz'][0];
-				spec1.width = 20;
-				spec1.height = 20;
-				spec1.center = _location;
-				spec1.speed_std = 20;
-				spec1.speed_mean = 280;
-				spec1.lifetime_mean = 2.5;
-				spec1.lifetime_std = .5;
-				spec1.genRate = 80;
 
+				for(var i = 0; i < howManySpecs; i++){
 
-				spec2.image = images['starz'][1];
-				spec2.width = 20;
-				spec2.height = 20;
-				spec2.center = _location;
-				spec2.speed_std = 20;
-				spec2.speed_mean = 280;
-				spec2.lifetime_mean = 2.5;
-				spec2.lifetime_std = .5;
-				spec2.genRate = 90;
+					var spec = {};
+					spec.image = images['starz'][i];
+					spec.width = 20;
+					spec.height = 20;
+					spec.center = _location;
+					spec.speed_std = 10;
+					spec.speed_mean = 20;
+					spec.lifetime_mean = 2.5;
+					spec.lifetime_std = .5;
+					spec.genRate = 80;
 
-
-				pics.push(spec1);
-				pics.push(spec2);
-
+					pics.push(spec);
+				}
 
 				xparam = Explosion.explosionParameters(pics, _graphics, dur);
 				exp = Explosion.create(xparam);
@@ -637,11 +626,11 @@ GAME.NTTS = (function(){
 			}
 
 
-			function isOn(){
+			function done(){
 
 				var over = true;
 
-				// If at least one bomb is on, the leve goes on.
+				// If at least one explosion is visible, the level is not over.
 				for(var exp in explosions){
 
 					if(explosions.hasOwnProperty(exp)){
@@ -661,7 +650,7 @@ GAME.NTTS = (function(){
 
 			return {
 
-				isOn : isOn,
+				done : done,
 				update : update,
 				render : render,
 				setExplosion : setExplosion

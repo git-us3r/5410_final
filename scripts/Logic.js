@@ -85,7 +85,7 @@ GAME.Logic = (function(){
 
 		// This allows the player to view the current screen for a moment longer after the level is over
 		// If it is the first run, this is skipped, because is not a level up.
-		if(interludeCurrent >= 2 && !screenSwitch && !firstRun){
+		if(interludeCurrent >= 1 && !screenSwitch && !firstRun){
 
 			setLevel();
 			screenSwitch = true;
@@ -200,6 +200,7 @@ GAME.Logic = (function(){
 
 
 			var tempState = GAME.gameState.levelUp();
+			Score.setLevelScores();
 			if(tempState === -1){
 
 				// Game over:
@@ -311,7 +312,7 @@ GAME.Logic = (function(){
 	function levelOver(){
 
 		//return NTTS['BOMBS'].on();
-		return (NTTS['BOMBS'].on() && NTTS['EXP'].isOn());
+		return (NTTS['BOMBS'].done() && NTTS['EXP'].done());
 	};
 
 
@@ -342,7 +343,15 @@ GAME.Logic = (function(){
 
 GAME.Score = (function(){
 
-	var score = 0
+	var score = {
+
+		TotalScore : 0,
+		LevelScores : [],
+		TotalTime : 0,
+		LevelTimes : [],
+	}
+		, LevelScore = 0
+		, LevelTime = 0
 		, mult = 2
 		, explosionPenalty = 5
 		, center = {x : 800, y : 100};
@@ -351,18 +360,57 @@ GAME.Score = (function(){
 
 		if(_status === 'safe')
 		{
-			score += Math.max(_timeRemaining * mult, mult);
+			// score += Math.max(_timeRemaining * mult, mult);
+			LevelScore += Math.max(_timeRemaining * mult, 1);
+			LevelTime += _timeRemaining;
+
 		}
 		else if (_status === 'exp')
 		{
-			score = Math.max(score - explosionPenalty, 0);
+			LevelScore = Math.max(LevelScore - explosionPenalty, 0);
 		}
 
 	}
 
-	function reportScore(){return score};
 
-	function resetScore(){score = 0;}
+	//http://stackoverflow.com/questions/8779249/how-to-stringify-inherited-objects-to-json
+	function flatten(obj) {
+   
+	    var result = Object.create(obj);
+	    for(var key in result) {
+	        result[key] = result[key];
+	    }
+	    return result;
+	}
+
+
+	function reportScore(){
+
+
+		//setLevelScores();		
+		return  JSON.stringify(flatten(score));
+	};
+
+
+	function setLevelScores(_levelTime){
+
+		score.TotalScore += LevelScore;
+		score.LevelScores.push(LevelScore);
+
+		score.TotalTime += LevelTime;
+		score.LevelTimes.push(LevelTime);
+	}
+
+	function resetScore(){
+
+		score.TotalScore = 0;
+		score.LevelScores = [];
+		score.TotalTime = 0;
+		score.LevelTimes = [];
+		LevelScore = 0;
+		LevelTime = 0;
+
+	}
 
 	function update(){
 
@@ -379,7 +427,7 @@ GAME.Score = (function(){
 		
 
 		ctx.font = '60px Arial';
-		ctx.fillText('SCORE ' + score, 0, 0);	
+		ctx.fillText('SCORE ' + LevelScore, 0, 0);	
 
 		ctx.translate(-center.x, -center.y);			
 		
@@ -393,7 +441,8 @@ GAME.Score = (function(){
 		render : render,
 		processAction : processAction,
 		reportScore : reportScore,
-		resetScore : resetScore
+		resetScore : resetScore,
+		setLevelScores : setLevelScores
 
 	};
 
@@ -404,6 +453,7 @@ GAME.Score = (function(){
 
 GAME.run = function(){
 
+	GAME.Score.resetScore();
 	GAME.gameState.reset();
 	GAME.gameState.randomizeTimers();
 	//var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);

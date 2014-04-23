@@ -31,32 +31,41 @@ Storage = (function () {
 				, tempStorage = [];
 
 
-			////////
-			// First: populate temp array with the actual top scores (all greater than current)	
-			// Second: insert current score in appropriate location
-			// Third: continue populating temp array with the remaining top scores (at most 4)
-			// Finally: clear localStorage and trasfer the ordered scores to it.
-			//////////
-			for(var i = 0; i < topScores; i++){
+			if(localStorage.length > 0){
 
-				if(localStorage[i] <= value || localStorage[i] === 'undefined'){
+				////////
+				// First: populate temp array with the actual top scores (all greater than current)	
+				// Second: insert current score in appropriate location
+				// Third: continue populating temp array with the remaining top scores (at most 4)
+				// Finally: clear localStorage and trasfer the ordered scores to it.
+				//////////
+				for(var i = 0; i < topScores; i++){
 
-					pivot = i;
-					break;
+
+					// TODO : FIX
+					if(localStorage[i] <= value || localStorage[i] === 'undefined'){
+
+						pivot = i;
+						break;
+					}
+				}
+
+
+				for(var i = 0; i < pivot; i++){
+
+					tempStorage.push(localStorage[i]);
+				}
+
+				tempStorage.push(value);
+
+				for(var i = pivot; i < topScores - pivot; i++){
+
+					tempStorage.push(localStorage[i]);
 				}
 			}
+			else{
 
-
-			for(var i = 0; i < pivot; i++){
-
-				tempStorage.push(localStorage[i]);
-			}
-
-			tempStorage.push(value);
-
-			for(var i = pivot; i < topScores - pivot; i++){
-
-				tempStorage.push(localStorage[i]);
+				tempStorage.push(value);
 			}
 
 
@@ -65,10 +74,9 @@ Storage = (function () {
 
 			for(var i = 0; i < topScores; i++){
 
+
 				localStorage[i] = tempStorage[i];
 			}
-
-
 		}
 		
 		
@@ -77,12 +85,15 @@ Storage = (function () {
 			localStorage.removeItem(key);
 		}
 
+
+
+
 		function report() {
 			var node = document.getElementById('div-console'),
 				item,
 				key;
 			
-			node.innerHTML = 'Top 5 <br/>';
+			node.innerHTML = 'Top 5 <br/> <ul>';
 			/*
 			for (item = 0; item < localStorage.length; item++) {
 				key = localStorage.key(item);
@@ -99,9 +110,22 @@ Storage = (function () {
 					}
 					else{
 
-						key = localStorage.getItem(k);
+						key = JSON.parse(localStorage.getItem(k));
+
 					}
-					node.innerHTML += (key + '<br/>');
+					
+
+					// New score
+					node.innerHTML += ('<ul>' + ctr);
+					for(var prop in key){
+
+						if(key.hasOwnProperty(prop)){
+
+							node.innerHTML += ('<li>' + prop + ': ' + key[prop] + '</li><br/>');
+						}
+					}
+
+					node.innerHTML += ('</ul>');
 					ctr++;
 
 					if(ctr > 5){
@@ -110,6 +134,7 @@ Storage = (function () {
 					}
 				}
 			}
+			node.innerHTML += '</ul>';
 			node.scrollTop = node.scrollHeight;
 		}
 
