@@ -37,6 +37,8 @@ function particleSystem(spec, graphics) {
 				acceleration : {x : 0, y : 0},
 				width: spec.width,
 				height: spec.height,
+				initialWidth : spec.width,
+				initialHeight : spec.height,
 				speed: Random.nextGaussian(spec.speed_mean, spec.speed_std), // pixels per second
 				rotation: 0,
 				lifetime: spec.lifetime_mean, //Random.nextGaussian(spec.lifetime_mean, spec.lifetime_stdev),	// How long the particle should live, in seconds
@@ -56,8 +58,8 @@ function particleSystem(spec, graphics) {
 
 			var gravityIsAB = { x : 0, y : 9.80 };
 
-			direction = Vector2d.add(gravityIsAB, p.direction);
-			direction = Vector2d.scale(speed, direction);
+			p.direction = Vector2d.add(gravityIsAB, p.direction);
+			p.direction = Vector2d.scale(p.speed, p.direction);
 
 		};
 
@@ -100,9 +102,10 @@ function particleSystem(spec, graphics) {
 			    // scales the direction vector by the distance traveled ( time * speed ) and adds
 			    // the result to the postition vector.
                 //
-				// particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
-				// particle.center.y += (elapsedTime * particle.speed * particle.direction.y);
-				particle.fall(elapsedTime);
+                // particle.fall(elapsedTime);
+				particle.center.x += (elapsedTime * particle.speed * particle.direction.x);
+				particle.center.y += (elapsedTime * particle.speed * particle.direction.y + 10);
+				
 
 
 
@@ -113,8 +116,11 @@ function particleSystem(spec, graphics) {
 
 
 				// Reduce size of particle
-				particle.width = Math.max(0, particle.width * particle.lifetime);
-				particle.height = Math.max(0, particle.height * particle.lifetime);
+				// particle.width = Math.max(0, particle.width * particle.lifetime);
+				// particle.height = Math.max(0, particle.height * particle.lifetime);
+				particle.width = Math.max(particle.width - elapsedTime * particle.initialWidth, 0);
+				particle.height = Math.max(particle.height - elapsedTime * particle.initialHeight, 0);
+
 				
 				//
 				// If the lifetime has expired, identify it for removal

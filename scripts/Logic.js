@@ -310,15 +310,20 @@ GAME.Logic = (function(){
 
 	function levelOver(){
 
-		return NTTS['BOMBS'].on();
+		//return NTTS['BOMBS'].on();
+		return (NTTS['BOMBS'].on() && NTTS['EXP'].isOn());
 	};
 
 
 	function bombNotification(_status, _timeRemaining, _location){
 
 		Score.processAction(_status, _timeRemaining);
-		NTTS['EXP'].setExplosion(_location);
-	}
+
+		if(_status === 'exp'){
+
+			NTTS['EXP'].setExplosion(_location, GAME.Graphics);
+		}
+	};
 
 
 	return {

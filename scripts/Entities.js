@@ -30,6 +30,15 @@ GAME.NTTS = (function(){
 	images['loose'] = GAME['images']['images/loose.png'];
 	images['win'] = GAME['images']['images/win.png'];
 
+	images['starz'] = [];
+
+	images['starz'].push(GAME['images']['images/star_blue.png']);
+	images['starz'].push(GAME['images']['images/star_green.png']);
+	images['starz'].push(GAME['images']['images/star_purple.png']);
+	images['starz'].push(GAME['images']['images/star_yellow.png']);
+
+
+
 	images['GlassNumbers'] = [];
 
 
@@ -550,17 +559,109 @@ GAME.NTTS = (function(){
 
 
 		
-		ntts['EXP'] = (function(){
+		ntts['EXP'] = (function(_graphics){
 
-			function update(){}
+			var explosions = {};
 
-			function render(){}
+			function update(_elapsedTime){
 
-			function setExplosion(_location){}
+				for(var exp in explosions){
+
+					if(explosions.hasOwnProperty(exp)){
+
+						explosions[exp].update(_elapsedTime);
+
+						if(!explosions[exp].visible){
+
+							delete explosions[exp];
+						}
+					}
+				}
+			}
+
+			function render(){
+
+				for(var exp in explosions){
+
+					if(explosions.hasOwnProperty(exp)){
+
+						explosions[exp].render(_graphics);
+					}
+				}
+			}
+
+
+
+			function setExplosion(_location, _graphics){
+
+				// Define explosion parameters and use Explosion to save
+				// an instance of an explosion.
+
+				var spec1 = {}
+					, spec2 = {}
+					, pics = []
+					, xparam = {}
+					, exp = {}
+					, dur = 3;
+				
+				spec1.image = images['starz'][0];
+				spec1.width = 20;
+				spec1.height = 20;
+				spec1.center = _location;
+				spec1.speed_std = 20;
+				spec1.speed_mean = 280;
+				spec1.lifetime_mean = 2.5;
+				spec1.lifetime_std = .5;
+				spec1.genRate = 80;
+
+
+				spec2.image = images['starz'][1];
+				spec2.width = 20;
+				spec2.height = 20;
+				spec2.center = _location;
+				spec2.speed_std = 20;
+				spec2.speed_mean = 280;
+				spec2.lifetime_mean = 2.5;
+				spec2.lifetime_std = .5;
+				spec2.genRate = 90;
+
+
+				pics.push(spec1);
+				pics.push(spec2);
+
+
+				xparam = Explosion.explosionParameters(pics, _graphics, dur);
+				exp = Explosion.create(xparam);
+
+				explosions[exp.id] = exp;
+			}
+
+
+			function isOn(){
+
+				var over = true;
+
+				// If at least one bomb is on, the leve goes on.
+				for(var exp in explosions){
+
+					if(explosions.hasOwnProperty(exp)){
+
+						if(explosions[exp].visible){
+
+							over = false;
+							break;
+						}
+					}
+				}
+
+				return over;	
+
+			}
 
 
 			return {
 
+				isOn : isOn,
 				update : update,
 				render : render,
 				setExplosion : setExplosion
@@ -572,7 +673,6 @@ GAME.NTTS = (function(){
 		// Register Input object and register click function.
 		// ntts['INPUT'] = Input;
 		// ntts['INPUT'].registerCommand(ntts['BOMBS'].checkClick);
-
 		return ntts;
 	}
 
