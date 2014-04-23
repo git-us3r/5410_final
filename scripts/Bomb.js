@@ -46,7 +46,6 @@ var Bomb = (function(){
 				secondsCtr = 0;
 				secondsRemaining--;
 
-				_notify('tick');
 
 				// Check if it has been clicked.
 				if(safeRequest){
@@ -124,9 +123,12 @@ var Bomb = (function(){
 				// For more responsiveness
 
 				// safeRequest = true;
-				safe = true;
-				currentCover = checkMark;
-				_notify('safe', secondsRemaining, bomb.center);
+				if(!safe){
+
+					safe = true;
+					currentCover = checkMark;
+					_notify('safe', secondsRemaining, bomb.center);
+				}
 			}
 
 		}

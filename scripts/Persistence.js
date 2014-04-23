@@ -41,12 +41,21 @@ Storage = (function () {
 				//////////
 				for(var i = 0; i < topScores; i++){
 
-
-					// TODO : FIX
-					if(localStorage[i] <= value || localStorage[i] === 'undefined'){
+					if(localStorage[i] === 'undefined'){
 
 						pivot = i;
 						break;
+					}
+					else{
+
+						var localScore = JSON.parse(localStorage[i])
+						, localValue = JSON.parse(value);
+
+						if(localScore.TotalScore <= localValue.TotalScore){
+
+							pivot = i;
+							break;
+						}						
 					}
 				}
 
@@ -158,7 +167,7 @@ Storage = (function () {
 					}
 				}
 			}
-			node.innerHTML += '</ul>';
+			//node.innerHTML += '</ul>';
 			node.scrollTop = node.scrollHeight;
 		}
 
@@ -166,7 +175,163 @@ Storage = (function () {
 
 		function reportCar(){
 
-			// TODO
+			var node = document.getElementById('high-scores-container'),
+				item,
+				key;
+			
+				node.innerHTML = ('<div class="item active">');
+				  node.innerHTML += ('<img src="images/carouselSlide.png" alt="...">');
+				  node.innerHTML += ('<div class="carousel-caption">');
+				    node.innerHTML += ('TOP 5');
+				  node.innerHTML += ('</div>');
+				node.innerHTML += ('</div>');
+			/*
+			for (item = 0; item < localStorage.length; item++) {
+				key = localStorage.key(item);
+				node.innerHTML += ('Session: ' + key + ' Score: ' + localStorage[key] + '<br/>');
+			}
+			*/
+			var ctr = 1;
+			for(var k in localStorage){
+				if(localStorage.hasOwnProperty(k)){
+
+					if(localStorage.getItem(k) === 'undefined'){
+
+						key = 0;
+					}
+					else{
+
+						key = JSON.parse(localStorage.getItem(k));
+
+					}
+					
+
+					// New score
+					node.innerHTML += ('<div class="item">');
+					node.innerHTML += ('<img src="..." alt="...">');
+					node.innerHTML += ('<div class="carousel-caption">');
+
+					
+					node.innerHTML += ('<h1>' + ctr + '</h1>');
+					for(var prop in key){
+
+						if(key.hasOwnProperty(prop)){
+
+
+							if(key[prop].length > 0){
+
+								// node.innerHTML += ('<div class="panel panel-default">');
+								node.innerHTML += ('<h1>' + prop + '</h1>');
+
+								for(var i = 0; i < key[prop].length; i++){
+
+									node.innerHTML += ( '<h2>' + key[prop][i] + '</h2>');
+								}
+
+							}
+							else{
+
+								node.innerHTML += ('<h1>' + prop + '</h1>');
+								node.innerHTML += ('<h2>' + key[prop] + '</h2>');
+								//node.innerHTML += ( '<p>' +  prop + ": " + key[prop] + '</p>');
+							}
+						}
+					}
+
+					node.innerHTML += ('</div>');
+					node.innerHTML += ('</div>');
+					//node.innerHTML += ('</div>');
+					ctr++;
+
+					if(ctr > 5){
+
+						break;
+					}
+				}
+			}
+			node.scrollTop = node.scrollHeight;
+
+		}
+
+
+		function reportTable(){
+
+			var node = document.getElementById('high-scores-container')
+				, item
+				, key
+				, row
+				, cell
+				, ctr = 0;
+
+			node.innerHTML = "";
+
+			for(var k in localStorage){
+				
+				if(localStorage.hasOwnProperty(k)){
+
+					if(localStorage.getItem(k) === 'undefined'){
+
+						key = 0;
+					}
+					else{
+
+						key = JSON.parse(localStorage.getItem(k));
+
+					}
+				}
+					
+
+				// New score
+				//node.innerHTML += ('<tr>');
+				row = node.insertRow(ctr);
+
+				for(var prop in key){
+
+					cell = row.insertCell();
+					cell.innerHTML = "";
+
+					if(key[prop].length > 0){
+
+					
+						for(var i = 0; i < key[prop].length; i++){		
+
+							cell.innerHTML += (key[prop][i] + ' ');
+						}
+
+					}
+					else{
+
+						cell.innerHTML += key[prop];
+					}
+				}
+
+				ctr++;
+
+				if(ctr > 5){
+
+					break;
+				}
+			}
+
+			node.scrollTop = node.scrollHeight;
+		}
+
+
+
+		function testTable(){
+
+			var node = document.getElementById('high-scores-container'),
+				item,
+				key;
+
+			//node.innerHTML = ('<tr><td>Some sith on this td</td><td>another td</td></tr>');
+			var row = node.insertRow();
+			var cell = row.insertCell(0);
+			for(var i = 0; i < 4; i++){
+
+				cell.innerHTML = i;
+				cell = row.insertCell();
+			}
 
 		}
 
@@ -174,7 +339,9 @@ Storage = (function () {
 		return {
 			add : add,
 			remove : remove,
-			report : report
+			report : report,
+			reportCar : reportCar,
+			reportTable : reportTable
 		};
 }())
 

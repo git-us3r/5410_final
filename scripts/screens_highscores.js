@@ -13,7 +13,8 @@ GAME.screens['high-scores'] = (function() {
 	
 	function run(){
 
-		Storage.report();
+		// document.location = 'highscores.html';
+		Storage.reportTable();
 	}
 	
 	return {

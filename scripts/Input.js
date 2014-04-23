@@ -13,7 +13,14 @@ Input = (function() {
 				handlersDownArr : []				
 		};
 
-		that.collecting = false;
+		
+		that.initialize = function(){
+
+			that.collecting = false;
+			that.mouseDownArr.length = 0;
+			that.handlersDownArr.length = 0;
+		};
+
 
 		that.mouseDown = function(e) {
 			

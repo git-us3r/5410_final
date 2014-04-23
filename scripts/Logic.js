@@ -57,6 +57,7 @@ GAME.Logic = (function(){
 		screenSwitch = false;
 		firstRun = true;
 		resultsScreen = false;
+		GAME.Input.collecting = false;
 	}
 	
 
@@ -209,8 +210,13 @@ GAME.Logic = (function(){
 		if(gameoverCtr > gameoverTimeout){
 
 			on = false;
+			GAME.Input.collecting = false;
 			GAME.Sounds.stopSound('gamePlay');
-			ScreenEngine.showScreen('main-menu', GAME['screens']);
+
+
+			//ScreenEngine.showScreen('main-menu', GAME['screens']);
+			// GHOSTS in the SHELL? reload ...
+			window.location.reload();
 
 		}
 	}
@@ -430,7 +436,9 @@ GAME.Score = (function(){
 		{
 			// score += Math.max(_timeRemaining * mult, mult);
 			LevelScore += Math.max(_timeRemaining * mult, 1);
+			score.TotalScore += Math.max(_timeRemaining * mult, 1);
 			LevelTime += _timeRemaining;
+			score.TotalTime += _timeRemaining;
 
 		}
 		else if (_status === 'exp')
@@ -462,12 +470,12 @@ GAME.Score = (function(){
 
 	function setLevelScores(_levelTime){
 
-		score.TotalScore += LevelScore;
 		score.LevelScores.push(LevelScore);
-
-		score.TotalTime += LevelTime;
+		LevelScore = 0;
 		score.LevelTimes.push(LevelTime);
+		LevelTime = 0;
 	}
+
 
 	function resetScore(){
 
@@ -495,7 +503,7 @@ GAME.Score = (function(){
 		
 
 		ctx.font = '60px Arial';
-		ctx.fillText('SCORE ' + LevelScore, 0, 0);	
+		ctx.fillText('SCORE ' + score.TotalScore, 0, 0);	
 
 		ctx.translate(-center.x, -center.y);			
 		
@@ -527,8 +535,12 @@ GAME.run = function(){
 	GAME.gameState.randomizeTimers();
 	//var _NTTS = GAME.NTTS.initialize(GAME.Score.bombNotification, GAME.gameState.bombTimers[GAME.gameState.currentLevel]);
 	var _NTTS = GAME.NTTS.initialize(GAME.Logic.bombNotification, GAME.gameState.bombTimers());
+	
 	GAME.Input = Input;
-	GAME.Input.bind2Window();
+	GAME.Input.initialize();
+	GAME.Input.bind2Window();	
 	GAME.Input.registerCommand(_NTTS['BOMBS'].checkClick);
+	GAME.Input.collecting = false;
+
 	GAME.Logic.run(_NTTS, GAME.Score);
 };

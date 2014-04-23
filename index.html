@@ -27,19 +27,36 @@
 			</div>
 		</div>
 		<div id = "high-scores" class = "screen">
-			<h1>High Scores</h1>
-			<div id = "high-scores-container" class ="jumbotron">
+			<h1>TOP 5</h1>
+			<div>
+				
+				<table class="table">  
+			        <thead>  
+			          <tr>  
+			            <th>Level Times</th>
+			            <th>Total Time</th>
+			            <th>Level Scores</th>
+			            <th>Total Score</th>
+			            <th></th>  
+			          </tr>  
+			        </thead>  
+			        <tbody id="high-scores-container">  
+			          
+			        </tbody>  
+		      	</table> 
 
 			</div>
+				
 			<ul class = "menu">
-				<li><button id = "id-high-scores-back">Back</button></li>
+				<li><button id = "id-high-scores-back" class="btn btn-primary">Back</button></li>
 			</ul>
 		</div>
 		<div id = "help" class = "screen">
-			<h1>Help</h1>
-			<p>Click on the screen before hitting the space bar</p>
+			<p><h1>Help</h1></p>
+			<p>Click on the bombs to disable them before the time runs out.</p>
+			<p>Disable every bomb to move to the next level</p>
 			<ul class = "menu">
-				<li><button id = "id-help-back">Back</button></li>
+				<li><button id = "id-help-back" class="btn btn-primary">Back</button></li>
 			</ul>
 		</div>
 		<div id = "about" class = "screen">
@@ -47,7 +64,7 @@
 			<p>Developed by</p>
 			<p>Miguel Lopez</p>
 			<ul class = "menu">
-				<li><button id = "id-about-back">Back</button></li>
+				<li><button id = "id-about-back" class="btn btn-primary">Back</button></li>
 			</ul>
 		</div>
 	</div>

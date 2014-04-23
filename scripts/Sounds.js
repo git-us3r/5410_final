@@ -101,6 +101,8 @@ GAME.Sounds = (function(){
 		hit = GAME.sounds['sounds/hit.wav'];
 		explosion = GAME.sounds['sounds/explosion.wav'];
 		gamePlay = GAME.sounds['sounds/gamePlay.wav'];
+
+		gamePlay.volume = 0.2;
 	}
 
 
