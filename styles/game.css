@@ -54,6 +54,7 @@ ul.menu li
 	margin: 0.8em 0;
 }
 
+/*
 ul.menu li button
 {
 	font-family: Arial, sans-serif;
@@ -67,6 +68,7 @@ ul.menu li button
 	box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
 }
 
+
 ul.menu li button:hover
 {
 	background: #2E2EFE;
@@ -77,6 +79,8 @@ ul.menu li button:active
 	color: #CECEF6;
 	background: rgb(0, 0, 0);
 }
+
+*/
 
 #game div h1
 {

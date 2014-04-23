@@ -162,6 +162,15 @@ Storage = (function () {
 			node.scrollTop = node.scrollHeight;
 		}
 
+
+
+		function reportCar(){
+
+
+
+		}
+		
+
 		return {
 			add : add,
 			remove : remove,

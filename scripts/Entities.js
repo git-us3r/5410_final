@@ -118,7 +118,7 @@ GAME.NTTS = (function(){
 			}
 
 
-			function ResetBackground(){
+			function ShutDown(){
 
 				interlude = false;
 				currentDelay = 0;
@@ -135,7 +135,7 @@ GAME.NTTS = (function(){
 				render : render,
 				update : update,
 				InterludeOn : InterludeOn,
-				ResetBackground : ResetBackground
+				ShutDown : ShutDown
 			};
 
 		}());
@@ -601,14 +601,14 @@ GAME.NTTS = (function(){
 					, pics = []
 					, xparam = {}
 					, exp = {}
-					, dur = 3;
+					, dur = 1;
 
 				for(var i = 0; i < howManySpecs; i++){
 
 					var spec = {};
 					spec.image = images['starz'][i];
-					spec.width = 20;
-					spec.height = 20;
+					spec.width = 30;
+					spec.height = 30;
 					spec.center = _location;
 					spec.speed_std = 10;
 					spec.speed_mean = 20;
@@ -656,7 +656,95 @@ GAME.NTTS = (function(){
 				setExplosion : setExplosion
 			}
 		}());
+		
 
+
+
+		
+		ntts['GAMEOVER'] = (function(){
+
+			// Background NTT
+			var spec = {}
+				, on = false
+				, delayMax = 3
+				, currentDelay = 0 
+				, _image = images['BK']
+				, _width = 1200
+				, _height = 600
+				, _center = {
+
+					x : 600,
+					y : 300
+				}
+				, _rotation = 0;
+
+			spec = Spec.create(_image, _width, _height, _center, _rotation);
+
+			function render(_graphics){
+
+				if(on){
+					_graphics.drawImage(spec);
+				}
+			};
+
+
+			function update(_elapsedTime){
+
+				// Conditional update to make it simple on the logic end.
+				if(on){
+
+					currentDelay += _elapsedTime;
+
+					var shrinkOffset = 0.3;
+
+					if(currentDelay < delayMax){
+
+						spec.width = Math.max((spec.width)- (_elapsedTime * _width * shrinkOffset), 0);
+						spec.height = Math.max((spec.height) - (_elapsedTime * _height * shrinkOffset), 0);
+					}
+				
+				}
+
+			}
+
+
+			function run(){
+
+				on = true;
+				//play sound
+
+			}
+
+			function stop(){
+
+				on = false;
+				// stop sound.
+			}
+
+
+			function ResetBackground(){
+
+				interlude = false;
+				currentDelay = 0;
+
+				spec.width = _width;
+				spec.height = _height;
+				
+			}
+
+
+
+			return {
+
+				render : render,
+				update : update,
+				run : run,
+				ResetBackground : ResetBackground,
+				stop : stop
+			};
+
+		}());
+		
 
 
 		// Register Input object and register click function.

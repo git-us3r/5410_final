@@ -20,7 +20,18 @@ GAME.Logic = (function(){
 		, screenSwitch = false
 		, firstRun = true
 		, resultsScreen = false
-		, Score = {};
+		, Score = {}
+		, gameover = false
+		, gameoverCtr = 0
+		, gameoverTimeout = 3
+		, hk = 0
+		, expLocations = [
+
+			{x : 100, y : 100},
+			{x : 800, y : 300},
+			{x : 500, y : 200},
+			{x : 400, y : 400}
+		];
 
 
 	/////
@@ -85,7 +96,7 @@ GAME.Logic = (function(){
 
 		// This allows the player to view the current screen for a moment longer after the level is over
 		// If it is the first run, this is skipped, because is not a level up.
-		if(interludeCurrent >= 1 && !screenSwitch && !firstRun){
+		if(interludeCurrent >= 0.1 && !screenSwitch && !firstRun){
 
 			setLevel();
 			screenSwitch = true;
@@ -103,7 +114,7 @@ GAME.Logic = (function(){
 			delayCtr = 0;
 			//GAME.gameState.randomizeTimers();
 			//NTTS['BOMBS'].initializeBombs(GAME.Logic.bombNotification, GAME.gameState.bombTimers());
-			NTTS['BACKGROUND'].ResetBackground();
+			NTTS['BACKGROUND'].ShutDown();
 			NTTS['NUMBERS'].restart();
 			interlude = false;
 			screenSwitch = false;
@@ -179,10 +190,44 @@ GAME.Logic = (function(){
 	}
 
 
+	function updateGameOver(elapsedTime){
+
+
+		gameoverCtr += elapsedTime;
+
+		if(gameoverCtr >= hk){
+
+			NTTS['EXP'].setExplosion(expLocations[hk], GAME.Graphics);
+			hk++;
+		}
+
+
+		NTTS['GAMEOVER'].update(elapsedTime);
+		NTTS['EXP'].update(elapsedTime);
+
+		if(gameoverCtr > gameoverTimeout){
+
+			on = false;
+			ScreenEngine.showScreen('main-menu', GAME['screens']);
+
+		}
+	}
+
+
+
 	function gameOverInterlude(){
 
-		on = false;
-		ScreenEngine.showScreen('main-menu', GAME['screens']);
+		// on = false;
+		// ScreenEngine.showScreen('main-menu', GAME['screens']);
+		
+		//NTTS.shutDown();
+		// for now
+
+		gameover = true;
+		gameoverCtr = 0;
+		NTTS['GAMEOVER'].run();
+
+
 
 	}
 
@@ -226,7 +271,7 @@ GAME.Logic = (function(){
 		GAME.Input.collecting = false;		// wow ... no privacy!
 
 		interludeCurrent = 0;
-		interlude  = true;
+		interlude = true;
 
 		NTTS['NUMBERS'].restart();
 		screenSwitch = false;
@@ -247,6 +292,10 @@ GAME.Logic = (function(){
 
 			updateResults(elapsedTime);
 		}
+		else if (gameover){
+
+			updateGameOver(elapsedTime);
+		}
 		else{
 
 			updateGame(elapsedTime);
@@ -261,6 +310,14 @@ GAME.Logic = (function(){
 	
 
 
+	function renderGameOver(_graphics){
+
+		NTTS['GAMEOVER'].render(_graphics);
+		NTTS['EXP'].render(_graphics);
+	}
+
+
+
 	function render(_graphics){
 
 		if(interlude){
@@ -273,6 +330,10 @@ GAME.Logic = (function(){
 					NTTS[ntt].render(_graphics);
 				}
 			}
+		}
+		else if (gameover){
+
+				renderGameOver(_graphics);
 		}
 		else {
 
