@@ -23,7 +23,7 @@ GAME.Logic = (function(){
 		, Score = {}
 		, gameover = false
 		, gameoverCtr = 0
-		, gameoverTimeout = 3
+		, gameoverTimeout = 3.9
 		, hk = 0
 		, expLocations = [
 
@@ -129,17 +129,6 @@ GAME.Logic = (function(){
 
 
 
-	function updateGame(elapsedTime){
-
-		for(var ntt in NTTS){
-			if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
-
-				NTTS[ntt].update(elapsedTime);
-			}
-		}
-	}
-
-
 
 	function looseInterlude(){
 
@@ -164,6 +153,16 @@ GAME.Logic = (function(){
 
 	}
 
+
+	function updateGame(elapsedTime){
+
+		for(var ntt in NTTS){
+			if(ntt !== 'NUMBERS' && NTTS[ntt] && NTTS[ntt].update){
+
+				NTTS[ntt].update(elapsedTime);
+			}
+		}
+	}
 
 
 	function updateResults (elapsedTime) {
@@ -198,6 +197,7 @@ GAME.Logic = (function(){
 		if(gameoverCtr >= hk){
 
 			NTTS['EXP'].setExplosion(expLocations[hk], GAME.Graphics);
+			GAME.Sounds.playSound('explosion');
 			hk++;
 		}
 
@@ -208,6 +208,7 @@ GAME.Logic = (function(){
 		if(gameoverCtr > gameoverTimeout){
 
 			on = false;
+			GAME.Sounds.stopSound('gamePlay');
 			ScreenEngine.showScreen('main-menu', GAME['screens']);
 
 		}
@@ -363,7 +364,7 @@ GAME.Logic = (function(){
 		elapsedTime = 0;
 		lastTimeStamp = performance.now();
 
-		//PlaySound(Sounds.gamePlay)
+		GAME.Sounds.playSound('gamePlay');
 
 		requestAnimationFrame(loop);
 	};
@@ -384,6 +385,7 @@ GAME.Logic = (function(){
 		if(_status === 'exp'){
 
 			NTTS['EXP'].setExplosion(_location, GAME.Graphics);
+			GAME.Sounds.playSound('explosion');
 		}
 	};
 
