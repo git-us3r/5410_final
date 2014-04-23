@@ -57,7 +57,6 @@ GAME.Logic = (function(){
 		screenSwitch = false;
 		firstRun = true;
 		resultsScreen = false;
-
 	}
 	
 
@@ -193,6 +192,8 @@ GAME.Logic = (function(){
 
 
 		gameoverCtr += elapsedTime;
+
+		GAME.Sounds.lowerVol('gamePlay');
 
 		if(gameoverCtr >= hk){
 
@@ -387,6 +388,10 @@ GAME.Logic = (function(){
 			NTTS['EXP'].setExplosion(_location, GAME.Graphics);
 			GAME.Sounds.playSound('explosion');
 		}
+		else if (_status === 'safe'){
+			GAME.Sounds.playSound('hit');
+		}			
+
 	};
 
 
@@ -516,6 +521,7 @@ GAME.Score = (function(){
 
 GAME.run = function(){
 
+	GAME.Sounds.initialize();
 	GAME.Score.resetScore();
 	GAME.gameState.reset();
 	GAME.gameState.randomizeTimers();

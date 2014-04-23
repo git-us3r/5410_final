@@ -3,6 +3,9 @@
 GAME.Sounds = (function(){
 
 	'use strict';
+	var hit = {}
+		, gamePlay = {}
+		, explosion = {};
 	
 	function playSound (_sound) {
 
@@ -13,18 +16,21 @@ GAME.Sounds = (function(){
 		switch(_sound){
 
 			case 'hit':
-			GAME.sounds['sounds/hit.wav'].cloneNode().currentTime = 0;
-			GAME.sounds['sounds/hit.wav'].cloneNode().play();
+			hit.pause();
+			hit.currentTime = 0;
+			hit.play();
 			break;
 
 			case 'explosion':
-			GAME.sounds['sounds/explosion.wav'].currentTime = 0;
-			GAME.sounds['sounds/explosion.wav'].play();
+			explosion.pause();
+			explosion.currentTime = 0;
+			explosion.play();
 			break;
 
 			case 'gamePlay':
-			GAME.sounds['sounds/gamePlay.wav'].currentTime = 0;
-			GAME.sounds['sounds/gamePlay.wav'].play();
+			gamePlay.pause();
+			gamePlay.currentTime = 0;
+			gamePlay.play();
 			break;			
 
 			default:
@@ -45,18 +51,18 @@ GAME.Sounds = (function(){
 		switch(_sound){
 
 			case 'hit':
-			GAME.sounds['sounds/hit.wav'].cloneNode().pause();
-			GAME.sounds['sounds/hit.wav'].cloneNode().currentTime = 0;
+			hit.pause();
+			hit.currentTime = 0;
 			break;
 
 			case 'explosion':
-			GAME.sounds['sounds/explosion.wav'].pause();
-			GAME.sounds['sounds/explosion.wav'].currentTime = 0;
+			explosion.pause();
+			explosion.currentTime = 0;
 			break;
 
 			case 'gamePlay':
-			GAME.sounds['sounds/gamePlay.wav'].pause();
-			GAME.sounds['sounds/gamePlay.wav'].currentTime = 0;
+			gamePlay.pause();
+			gamePlay.currentTime = 0;
 			break;			
 
 			default:
@@ -67,17 +73,44 @@ GAME.Sounds = (function(){
 	}
 
 
+	function lowerVol(_sound){
+
+		switch(_sound){
+
+			case 'hit':
+			hit.volume = 0.1 * GAME.sounds['sounds/hit.wav'].volume;
+			break;
+
+			case 'explosion':
+			explosion.volume = 0.1 * GAME.sounds['sounds/explosion.wav'].volume;
+			break;
+
+			case 'gamePlay':
+			gamePlay.volume = 0.5;
+			break;			
+
+			default:
+			break;
+		}
+
+	}
+
+
+	function initialize(){
+
+		hit = GAME.sounds['sounds/hit.wav'];
+		explosion = GAME.sounds['sounds/explosion.wav'];
+		gamePlay = GAME.sounds['sounds/gamePlay.wav'];
+	}
+
+
 
 	return {
 
-		PossibleSounds : {
-
-			hit : 'hit',
-			explosion : 'explosion',
-			gamePlay : 'gamePlay'
-		}
-		, playSound : playSound
-		, stopSound : stopSound
+		playSound : playSound,
+		stopSound : stopSound,
+		lowerVol : lowerVol,
+		initialize : initialize
 	};
 
 

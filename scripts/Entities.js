@@ -695,7 +695,7 @@ GAME.NTTS = (function(){
 
 					currentDelay += _elapsedTime;
 
-					var shrinkOffset = 0.3;
+					var shrinkOffset = 0.38;
 
 					if(currentDelay < delayMax){
 
