@@ -117,7 +117,7 @@ var Bomb = (function(){
 			// It will be void.
 
 			// It will become safe during update.
-			if((differenceVectorMagnitude <= .35 * bomb.width)){
+			if((differenceVectorMagnitude <= .55 * bomb.width)){
 
 				safeRequest = true;
 			}

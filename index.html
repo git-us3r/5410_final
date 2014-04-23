@@ -5,6 +5,8 @@
 	<meta charset = "UTF-8">
 	<title>Miguel Lopez CS5410 Final</title>
 	<link rel = "stylesheet" type = "text/css" href = "styles/game.css">
+	<link rel = "stylesheet" type = "text/css" href = "styles/bootstrap.css">
+	<link rel = "stylesheet" type = "text/css" href = "styles/bootstrap.min.css">
 	<script src = "scripts/modernizr.js"></script>
 	<script src = "scripts/Loader.js"></script>
 </head>
@@ -20,11 +22,14 @@
 			</ul>
 		</div>
 		<div id = "game-play" class = "screen">
-			<canvas id = "canvas" width = "1200" height = "600"></canvas>
+			<div >
+			 	<canvas id = "canvas" width = "1200" height = "600" class="jumbotron container"></canvas>
+			</div>
 		</div>
 		<div id = "high-scores" class = "screen">
 			<h1>High Scores</h1>
-			<div id = "div-console">
+			<div id = "high-scores-container" class ="jumbotron">
+
 			</div>
 			<ul class = "menu">
 				<li><button id = "id-high-scores-back">Back</button></li>

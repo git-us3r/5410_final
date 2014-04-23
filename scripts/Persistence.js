@@ -89,11 +89,11 @@ Storage = (function () {
 
 
 		function report() {
-			var node = document.getElementById('div-console'),
+			var node = document.getElementById('high-scores-container'),
 				item,
 				key;
 			
-			node.innerHTML = 'Top 5 <br/> <ul>';
+			node.innerHTML = '<h1>Top 5 </h1>';
 			/*
 			for (item = 0; item < localStorage.length; item++) {
 				key = localStorage.key(item);
@@ -116,16 +116,40 @@ Storage = (function () {
 					
 
 					// New score
-					node.innerHTML += ('<ul>' + ctr);
+					node.innerHTML += ('<div class= "panel panel-default">');
+					node.innerHTML += ('<div class= "panel panel-heading"><h1>' + ctr + '</h1></div>');
+					node.innerHTML += ('<div class="panel-body">');
 					for(var prop in key){
 
 						if(key.hasOwnProperty(prop)){
 
-							node.innerHTML += ('<li>' + prop + ': ' + key[prop] + '</li><br/>');
+
+							if(key[prop].length > 0){
+
+								// node.innerHTML += ('<div class="panel panel-default">');
+								node.innerHTML += ('<div class="panel-heading">' + prop + '</div>');
+								node.innerHTML += ('<div class="panel-body">');
+
+								for(var i = 0; i < key[prop].length; i++){
+
+									node.innerHTML += ( '<h2>' + key[prop][i] + '</h2>');
+								}
+
+								node.innerHTML += ('</div>');
+								node.innerHTML += ('</div>');
+							}
+							else{
+
+								node.innerHTML += ('<div class="panel-heading">' + prop + '</div>');
+								node.innerHTML += ('<div class="panel-body"><h2>' + key[prop] + '</h2></div>');
+								//node.innerHTML += ( '<p>' +  prop + ": " + key[prop] + '</p>');
+							}
 						}
 					}
 
-					node.innerHTML += ('</ul>');
+					node.innerHTML += ('</div>');
+					node.innerHTML += ('</div>');
+					//node.innerHTML += ('</div>');
 					ctr++;
 
 					if(ctr > 5){
